@@ -72,7 +72,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 				.sign(algorithm);
 		
 		Map<String, String> tokens = new HashMap<>();
-		tokens.put("acces_token", accessToken);
+		tokens.put("access_token", accessToken);
 		tokens.put("refresh_token", refreshToken);
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		new ObjectMapper().writeValue(response.getOutputStream(), tokens);

@@ -47,18 +47,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController 
-@RequestMapping("/api")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 @Slf4j
 public class UserResource {
 	private final UserService userService;
 	
-	@GetMapping(value = "/users")
+	@GetMapping(value = "")
 	public ResponseEntity<List<User>>getUsers() {
 		return ResponseEntity.ok().body(userService.getUsers());
 	}
 
-	@PostMapping(value = "/user/save")
+	@PostMapping(value = "/save")
 	public ResponseEntity<User> saveUser(@RequestBody User user) {
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/user/save").toUriString());
 		return ResponseEntity.created(uri).body(userService.saveUser(user));
@@ -70,7 +70,7 @@ public class UserResource {
 		return ResponseEntity.created(uri).body(userService.saveRole(role));
 	}
 
-	@PostMapping(value = "/users/addToUser")
+	@PostMapping(value = "/addToUser")
 	public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
 		//URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
 		userService.addRoleToUser(form.getUsername(), form.getRoleName());
