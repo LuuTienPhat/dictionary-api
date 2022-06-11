@@ -12,6 +12,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.example.demo.domain.Base;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +29,7 @@ import lombok.Setter;
 public class EnWord {
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name = "word")
@@ -39,7 +41,7 @@ public class EnWord {
 	@Column(name = "pronunciation")
 	private String pronunciation;
 
-	@OneToMany(mappedBy = "enWord", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "enWord", fetch = FetchType.LAZY)
 	private List<Meaning> meanings;
 	
 //	@ManyToMany

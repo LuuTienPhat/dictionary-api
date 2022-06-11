@@ -16,4 +16,10 @@ public interface EnWordService {
 	EnWord getEnWord(String word);
 	
 	List<EnWord> getEnWords();
+	
+	List<EnWord> getEnWords(int offset, int limit);
+	
+	List<EnWord> getEnWords(String keyword);
+	
+	Long count();
 }

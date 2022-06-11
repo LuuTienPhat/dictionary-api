@@ -83,8 +83,21 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 		user.getRoles().forEach(role -> {
 			authorities.add(new SimpleGrantedAuthority(role.getName()));
 		});
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+		return new org.springframework.security.core.userdetails.User(user.getId().toString(), user.getPassword(),
 				authorities);
+	}
+
+	@Override
+	public void deleteRoleFromUser(String username, String roleName) {
+		User user = userRepo.findByUsername(username);
+		Role role = roleRepo.findByName(roleName);
+		user.getRoles().remove(role);
+	}
+
+	@Override
+	public User getUser(Long id) {
+		// TODO Auto-generated method stub
+		return userRepo.findById(id).get();
 	}
 }
 

@@ -1,16 +1,12 @@
 package com.example.demo.entities;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.example.demo.domain.User;
@@ -19,30 +15,24 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.bytebuddy.dynamic.loading.ClassReloadingStrategy.Strategy;
 
 @Entity
-@Table(name = "feedback")
+@Table(name = "image")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Feedback {
+public class ImageEntity {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column(name = "email")
-	private String email;
+	@ManyToOne()
+	@JoinColumn(name = "product_id")
+	private Product product;
 
-	@Column(name = "content")
-	private String content;
-
-	@Column(name = "approved")
-	private int approved;
-
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
-
+	@Column(name = "image")
+	private String image;
 }

@@ -19,18 +19,18 @@ public class SpringSecurityJwtApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringSecurityJwtApplication.class, args);
 	}
-	
+
 //	public PasswordEncoder passwordEncoder() {
 //		return new BCryptPasswordEncoder();
 //	}
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
-	    return new BCryptPasswordEncoder();
+		return new BCryptPasswordEncoder();
 	}
-//	
-//	@Bean
-//	CommandLineRunner run(UserService userService) {
-//		return args -> {
+
+	@Bean
+	CommandLineRunner run(UserService userService) {
+		return args -> {
 //			userService.saveRole(new Role(null, "ROLE_USER"));
 //			userService.saveRole(new Role(null, "ROLE_MANAGER"));
 //			userService.saveRole(new Role(null, "ROLE_ADMIN"));
@@ -40,15 +40,14 @@ public class SpringSecurityJwtApplication {
 //			userService.saveUser(new User(null, "Will Smith", "will", "1234",new ArrayList<>(), new ArrayList<>()));
 //			userService.saveUser(new User(null, "Jim Carry", "jim", "1234",new ArrayList<>(), new ArrayList<>()));
 //			userService.saveUser(new User(null, "Arnold", "arnold", "1234",new ArrayList<>(), new ArrayList<>()));
-//			
-//		
-//			userService.addRoleToUser("john", "ROLE_USER");
-//			userService.addRoleToUser("john", "ROLE_MANAGER");
-//			userService.addRoleToUser("will", "ROLE_MANAGER");
-//			userService.addRoleToUser("jim", "ROLE_ADMIN");
-//			userService.addRoleToUser("arnold", "ROLE_SUPER_ADMIN");
+
+//			userService.addRoleToUser("phat", "ROLE_MANAGER");
+//			userService.addRoleToUser("tuan", "ROLE_MANAGER");
+//			userService.addRoleToUser("john", "ROLE_ADMIN_WORD");
+//			userService.addRoleToUser("kim", "ROLE_ADMIN_SALE");
+//			userService.addRoleToUser("guest", "ROLE_CUSTOMER");
 //			userService.addRoleToUser("arnold", "ROLE_ADMIN");
 //			userService.addRoleToUser("arnold", "ROLE_USER");
-//		};
-//	}
+		};
+	}
 }

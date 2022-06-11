@@ -2,9 +2,6 @@ package com.example.demo.api;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,21 +16,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.Category;
-import com.example.demo.entities.EnWord;
 import com.example.demo.models.ResponseObject;
-import com.example.demo.repo.EnWordRepo;
 import com.example.demo.service.CategoryService;
-import com.example.demo.service.EnWordService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/enwords")
+@RequestMapping("/categories")
 @RequiredArgsConstructor
 @Slf4j
-public class EnWordController {
-	private final EnWordService enWordService;
+public class CategoryController {
+	private final CategoryService categoryService;
 
 	@GetMapping(value = "")
 	@ResponseBody
@@ -41,94 +35,93 @@ public class EnWordController {
 			@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "limit", required = false) Integer limit,
 			@RequestParam(value = "search", required = false) String keyword) {
-
 		ResponseEntity<ResponseObject> responseEntity = null;
-		List<EnWord> result = null;
+		
+		List<Category> result = null;;
 		if (keyword != null) {
-			result = enWordService.getEnWords(keyword);
+			result = categoryService.getCategories(keyword);
 		} else {
-			result = enWordService.getEnWords(offset, limit);
+			result = categoryService.getCategories();
 		}
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Fetch Enwords successfully!", result));
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Fetch categories successfully!", result));
 		} else {
 			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new ResponseObject("failed",
-					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to fetch enwords!", result));
+					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to fetch categories!", result));
 		}
 
 		return responseEntity;
 	}
 
 	@PostMapping(value = "")
-	@ResponseBody
-	public ResponseEntity<ResponseObject> newEnWord(@RequestBody EnWord newEnWord) {
+	public ResponseEntity<ResponseObject> newCategory(@RequestBody Category newCategory) {
 		ResponseEntity<ResponseObject> responseEntity = null;
-		EnWord result = enWordService.insertEnWord(newEnWord);
+		Category result = categoryService.insertCategory(newCategory);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Insert Enword successfully!", result));
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Insert category successfully!", result));
 		} else {
 			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new ResponseObject("failed",
-					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to insert Enword!", result));
+					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to insert category!", result));
 		}
+
 		return responseEntity;
+
 	}
 
 	@GetMapping(value = "/{id}")
-	@ResponseBody
-	ResponseEntity<ResponseObject> one(@PathVariable Long id) {
+	public ResponseEntity<ResponseObject> one(@PathVariable Long id) {
 		ResponseEntity<ResponseObject> responseEntity = null;
-		EnWord result = enWordService.getEnWord(id);
+		Category result = categoryService.getCategory(id);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Enword found!", result));
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Search category successfully!", result));
 		} else {
 			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-					new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "Enword NOT found!", result));
+					new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "category not found!", result));
 		}
+
 		return responseEntity;
 	}
 
 	@PutMapping(value = "/{id}")
-	@ResponseBody
-	ResponseEntity<ResponseObject> replaceEnWord(@RequestBody EnWord newEnWord, @PathVariable Long id) {
+	public ResponseEntity<ResponseObject> replaceCategory(@RequestBody Category newCategory, @PathVariable Long id) {
 		ResponseEntity<ResponseObject> responseEntity = null;
-		EnWord result = enWordService.updateEnWord(id, newEnWord);
+		Category result = categoryService.updateCategory(id, newCategory);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Update Enword successfully!", result));
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Update category successfully!", result));
 		} else {
 			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new ResponseObject("failed",
-					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to update Enword!", result));
+					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to update category!", result));
 		}
+
 		return responseEntity;
 	}
 
 	@DeleteMapping(value = "/{id}")
-	@ResponseBody
-	ResponseEntity<ResponseObject> deleteEmployee(@PathVariable Long id) {
+	public ResponseEntity<ResponseObject> deleteEmployee(@PathVariable Long id) {
 		ResponseEntity<ResponseObject> responseEntity = null;
 		try {
-			enWordService.deleteEnWord(id);
+			categoryService.deleteCategory(id);
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Delete Enword successfully!", null));
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Delete category successfully!", null));
 		} catch (Exception e) {
 			// TODO: handle exception
-			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-					new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "Failed to delete Enword!", null));
+			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new ResponseObject("failed",
+					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to delete category!", null));
 		}
 
 		return responseEntity;
 	}
-
+	
 	@GetMapping(value = "/count")
 	@ResponseBody
 	ResponseEntity<ResponseObject> count() {
-		ResponseEntity<ResponseObject> responseEntity = null;
-		Long result = enWordService.count();
-		return responseEntity = ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseObject("ok", HttpStatus.OK.value(), "Enword count", result));
+		Long result = categoryService.count();
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseObject("ok", HttpStatus.OK.value(), "Category count", result));
 
 	}
 }

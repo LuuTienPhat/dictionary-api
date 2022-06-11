@@ -1,16 +1,11 @@
 package com.example.demo.entities;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.example.demo.domain.User;
@@ -20,29 +15,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "feedback")
+//@Entity
+//@Table(name = "invoice_detail")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Feedback {
+public class InvoiceDetail {
 	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue
+	@Column(name = "id", updatable = false)
 	private Long id;
 
-	@Column(name = "email")
-	private String email;
+	@ManyToOne()
+	@JoinColumn(name = "invoice_id")
+	private Invoice invoice;
 
-	@Column(name = "content")
-	private String content;
+	@ManyToOne()
+	@JoinColumn(name = "product_id")
+	private Product product;
 
-	@Column(name = "approved")
-	private int approved;
+	@Column(name = "quantity")
+	private int quantity;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
-
+	@Column(name = "price")
+	private float price;
 }

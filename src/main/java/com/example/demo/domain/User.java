@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 
 import com.example.demo.entities.EnWord;
 import com.example.demo.entities.Feedback;
+import com.example.demo.entities.SavedWord;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,9 +37,12 @@ public class User {
 	@ManyToMany(fetch = FetchType.LAZY)
 	private Collection<Role> roles = new ArrayList<>();
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	private Collection<EnWord> enWords = new ArrayList<>();
+//	@ManyToMany(fetch = FetchType.LAZY)
+//	private Collection<SavedWord> enWords = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+	private Collection<SavedWord> enWords = new ArrayList<>();
 
-//	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
-//	private List<Feedback> feedbacks = new ArrayList<>();
+	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+	private List<Feedback> feedbacks = new ArrayList<>();
 }
