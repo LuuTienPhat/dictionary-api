@@ -1,5 +1,8 @@
 package com.example.demo.service.impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -132,6 +135,29 @@ public class OrderServiceImpl implements OrderService {
 	public List<Order> getOrders(int state) {
 		// TODO Auto-generated method stub
 		return orderRepo.findAllByState(state);
+	}
+
+	@Override
+	public List<Order> getOrdersOrderByOrderDateAsc(int state) {
+		return orderRepo.findAllByStateOrderByOrderDateAsc(state);
+	}
+
+	@Override
+	public Long countByOrderDateBetween(LocalDateTime orderDateStart, LocalDateTime orderDateEnd) {
+		List<Order> ordersThisMonth = orderRepo.findAllByOrderDateBetween(
+				orderDateStart,
+				orderDateEnd);
+		return Long.valueOf(ordersThisMonth.size());
+	}
+
+	@Override
+	public List<Order> getOrders(LocalDateTime orderDateStart, LocalDateTime orderDateEnd, int state) {
+		List<Order> orders = orderRepo.findAllByOrderDateBetween(
+				orderDateStart,
+				orderDateEnd);
+		
+		orders.removeIf(item -> item.getState() != state);
+		return orders;
 	}
 	
 }

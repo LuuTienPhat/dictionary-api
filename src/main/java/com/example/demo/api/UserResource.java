@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,27 +53,27 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@RestController 
+@RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @Slf4j
 public class UserResource {
 	private final UserService userService;
-	
+
 //	@GetMapping(value = "")
 //	public ResponseEntity<List<User>>getUsers() {
 //		return ResponseEntity.ok().body(userService.getUsers());
 //	}
-	
+
 	@GetMapping(value = "")
 	@ResponseBody
-	public ResponseEntity<ResponseObject> allButLimit(
-			@RequestParam(value = "offset", required = false) Integer offset,
+	public ResponseEntity<ResponseObject> allButLimit(@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "limit", required = false) Integer limit,
 			@RequestParam(value = "search", required = false) String keyword) {
 		ResponseEntity<ResponseObject> responseEntity = null;
-		
-		List<User> result = null;;
+
+		List<User> result = null;
+		;
 		if (keyword != null) {
 //			result = userService.getUsers(keyword);
 		} else {
@@ -82,22 +83,47 @@ public class UserResource {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Fetch users successfully!", result));
 		} else {
-			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new ResponseObject("failed",
-					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to fetch users!", result));
+			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+					new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "Failed to fetch users!", result));
 		}
 
 		return responseEntity;
 	}
-	
+
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<User>one(@PathVariable Long id) {
+	public ResponseEntity<User> one(@PathVariable Long id) {
 		return ResponseEntity.ok().body(userService.getUser(id));
 	}
 
-	@PostMapping(value = "/save")
-	public ResponseEntity<User> saveUser(@RequestBody User user) {
-		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/user/save").toUriString());
-		return ResponseEntity.created(uri).body(userService.saveUser(user));
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<ResponseObject> replaceCategory(@RequestBody User newUser, @PathVariable Long id) {
+		ResponseEntity<ResponseObject> responseEntity = null;
+		User result = userService.updateUser(id, newUser);
+		if (result != null) {
+			responseEntity = ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Update user successfully!", result));
+		} else {
+			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+					new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "Failed to update user!", result));
+		}
+
+		return responseEntity;
+	}
+
+	@PostMapping(value = "")
+	public ResponseEntity<ResponseObject> newUser(@RequestBody User newUser) {
+		ResponseEntity<ResponseObject> responseEntity = null;
+		User result = userService.saveUser(newUser);
+		if (result != null) {
+			responseEntity = ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Insert user successfully!", result));
+		} else {
+			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+					new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "Failed to insert user!", result));
+		}
+
+		return responseEntity;
+
 	}
 
 	@PostMapping(value = "/role/save")
@@ -107,31 +133,39 @@ public class UserResource {
 	}
 
 	@PostMapping(value = "/addToUser")
-	public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
-		//URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
-		userService.addRoleToUser(form.getUsername(), form.getRoleName());
-		return ResponseEntity.ok().build();
+	public ResponseEntity<?> count(@RequestBody RoleToUserForm form) {
+		Long result = userService.count();
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseObject("ok", HttpStatus.OK.value(), "User count", result));
 	}
-	
+
+	@GetMapping(value = "/count")
+	@ResponseBody
+	ResponseEntity<ResponseObject> count() {
+		Long result = userService.count();
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseObject("ok", HttpStatus.OK.value(), "User count", result));
+
+	}
+
 	@PostMapping(value = "/token/refresh")
-	public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws StreamWriteException, DatabindException, IOException {
+	public void refreshToken(HttpServletRequest request, HttpServletResponse response)
+			throws StreamWriteException, DatabindException, IOException {
 		String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-		if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			try {
-				
+
 				String refreshToken = authorizationHeader.substring("Bearer ".length());
 				Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 				JWTVerifier verifier = JWT.require(algorithm).build();
 				DecodedJWT decodedJWT = verifier.verify(refreshToken);
-				String username = decodedJWT.getSubject();
-				User user = userService.getUser(username);
-				
-				String accessToken = JWT.create()
-						.withSubject(user.getUsername())
-						.withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+				String userId = decodedJWT.getSubject();
+				User user = userService.getUser(Long.valueOf(userId));
+
+				String accessToken = JWT.create().withSubject(user.getUsername())
+						.withExpiresAt(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
 						.withIssuer(request.getRequestURI().toString())
-						.withClaim("roles",
-								user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
+						.withClaim("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
 						.sign(algorithm);
 
 				Map<String, String> tokens = new HashMap<>();
@@ -139,23 +173,21 @@ public class UserResource {
 				tokens.put("refresh_token", refreshToken);
 				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 				new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-				
-				
+
 			} catch (Exception e) {
 				response.setHeader("error", e.getMessage());
 				response.setStatus(HttpStatus.FORBIDDEN.value());
-			
+
 				Map<String, String> error = new HashMap<>();
 				error.put("error_message", e.getMessage());
 				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 				new ObjectMapper().writeValue(response.getOutputStream(), error);
 			}
-		}
-		else {
+		} else {
 			throw new RuntimeException("Refresh token is missing");
 		}
 	}
-	
+
 }
 
 @Data

@@ -38,7 +38,7 @@ public class OrderController {
 		ResponseEntity<ResponseObject> responseEntity = null;
 
 		List<Order> result = null;
-		
+
 		if (keyword != null) {
 			result = orderService.getOrders(keyword);
 		} else if (state != null) {
@@ -46,6 +46,25 @@ public class OrderController {
 		} else {
 			result = orderService.getOrders();
 		}
+		if (result != null) {
+			responseEntity = ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Fetch Orders successfully!", result));
+		} else {
+			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new ResponseObject("failed",
+					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to fetch Orders!", result));
+		}
+
+		return responseEntity;
+	}
+
+	@GetMapping(value = "/latest")
+	@ResponseBody
+	public ResponseEntity<ResponseObject> latest() {
+		ResponseEntity<ResponseObject> responseEntity = null;
+
+		List<Order> result = null;
+
+		result = orderService.getOrdersOrderByOrderDateAsc(0);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Fetch Orders successfully!", result));

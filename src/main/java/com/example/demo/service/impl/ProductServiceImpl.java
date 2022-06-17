@@ -101,4 +101,9 @@ public class ProductServiceImpl implements ProductService {
 	public Long count() {
 		return productRepo.count();
 	}
+
+	@Override
+	public List<Product> getProductsOrderByViewsAsc() {
+		return productRepo.findByOrderByViewsAsc();
+	}
 }

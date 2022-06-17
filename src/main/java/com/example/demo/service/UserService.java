@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.demo.domain.Role;
 import com.example.demo.domain.User;
+import com.example.demo.entities.Category;
 
 public interface UserService {
 	User saveUser(User user);
@@ -19,4 +20,10 @@ public interface UserService {
 	User getUser(Long id);
 
 	List<User> getUsers();
+	
+	List<User> getUsersAreCustomers();
+	
+	User updateUser(Long id, User newUser);
+	
+	Long count();
 }

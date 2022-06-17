@@ -17,6 +17,8 @@ public interface ProductService {
 	
 	List<Product> getProducts();
 	
+	List<Product> getProductsOrderByViewsAsc();
+	
 	List<Product> getProducts(String keyword);
 	
 	Long count();

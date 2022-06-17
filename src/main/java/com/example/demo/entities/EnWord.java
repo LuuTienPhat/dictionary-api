@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.example.demo.domain.Base;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -41,9 +43,10 @@ public class EnWord {
 	@Column(name = "pronunciation")
 	private String pronunciation;
 
+	@JsonManagedReference
 	@OneToMany(mappedBy = "enWord", fetch = FetchType.LAZY)
 	private List<Meaning> meanings;
-	
+
 //	@ManyToMany
 //	private List<User> users;
 }

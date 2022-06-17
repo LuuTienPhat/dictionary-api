@@ -37,10 +37,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		customAuthenticationFilter.setFilterProcessesUrl("/users/login");
 		http.csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.authorizeRequests().antMatchers("/users/login/**", "users/token/refresh/**").permitAll();
-		http.authorizeRequests().antMatchers(HttpMethod.GET,"/users/**").hasAnyAuthority("ROLE_MANAGER");
-		http.authorizeRequests().antMatchers(HttpMethod.POST,"/users/save/**").hasAnyAuthority("ROLE_MANAGER");
-		http.authorizeRequests().antMatchers("/categories").hasAnyAuthority("ROLE_ADMIN_SALE", "ROLE_MANAGER");
+		http.authorizeRequests().antMatchers("/users/login/**", "/users/token/refresh/**").permitAll();
+//		http.authorizeRequests().antMatchers(HttpMethod.GET,"/users/**").hasAnyAuthority("ROLE_MANAGER");
+//		http.authorizeRequests().antMatchers(HttpMethod.POST,"/users/save/**").hasAnyAuthority("ROLE_MANAGER");
+		http.authorizeRequests().antMatchers("/users/**").hasAnyAuthority("ROLE_MANAGER");
+		
+		http.authorizeRequests().antMatchers(HttpMethod.GET, "/enwords").permitAll();
+		http.authorizeRequests().antMatchers("/enwords/**").hasAnyAuthority("ROLE_ADMIN_WORD", "ROLE_MANAGER");
+		http.authorizeRequests().antMatchers("/partofspeeches/**").hasAnyAuthority("ROLE_ADMIN_WORD", "ROLE_MANAGER");
+		http.authorizeRequests().antMatchers("/meanings/**").hasAnyAuthority("ROLE_ADMIN_WORD", "ROLE_MANAGER");
+		http.authorizeRequests().antMatchers("/examples/**").hasAnyAuthority("ROLE_ADMIN_WORD", "ROLE_MANAGER");
+		
+		http.authorizeRequests().antMatchers(HttpMethod.POST,"/orders/").permitAll();
+		
+		http.authorizeRequests().antMatchers("/categories/**").hasAnyAuthority("ROLE_ADMIN_SALE", "ROLE_MANAGER");
+		http.authorizeRequests().antMatchers("/orders/**").hasAnyAuthority("ROLE_ADMIN_SALE", "ROLE_MANAGER");
+		http.authorizeRequests().antMatchers("/products/**").hasAnyAuthority("ROLE_ADMIN_SALE", "ROLE_MANAGER");
+		http.authorizeRequests().antMatchers("/invoices/**").hasAnyAuthority("ROLE_ADMIN_SALE", "ROLE_MANAGER");
+		
 		http.authorizeRequests().anyRequest().permitAll();
 		http.addFilter(customAuthenticationFilter);
 		http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.EnWord;
+import com.example.demo.entities.Meaning;
+import com.example.demo.entities.SavedWord;
+import com.example.demo.models.SimplifiedEnWord;
 import com.example.demo.repo.SavedWordRepo;
+import com.example.demo.repo.SavedWordRepository;
 import com.example.demo.service.FeedbackService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,65 +36,48 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class SavedWordController {
-	private final SavedWordRepo repository;
-
-//	public SavedWordController(SavedWordRepository repository) {
-//		// TODO Auto-generated constructor stub
-//		this.repository = repository;
-//	}
-
 	
-	@GetMapping(value = "/savedword/{userId}")
+	private final SavedWordRepository repository;
+	
+	@GetMapping(value = "/{userId}")
 	@ResponseBody
-	public List<EnWord> allSavedWordOfUser(@PathVariable Long userId) {
+	public List<SimplifiedEnWord> allSavedWordOfUser(@PathVariable Long userId) {
 
-		return repository.findSavedWord(userId);
+		List<EnWord> listSavedWord = repository.findSavedWord(userId);
+		List<SimplifiedEnWord> toBeReturn = new ArrayList<SimplifiedEnWord>();
+		for(EnWord e : listSavedWord) {
+
+			Meaning m = new Meaning();
+			m.setMeaning(e.getMeanings().get(0).getMeaning());
+			m.setPartOfSpeech(e.getMeanings().get(0).getPartOfSpeech()); 
+			List<Meaning> listMeaning = new ArrayList<Meaning>();
+			listMeaning.add(m);
+			SimplifiedEnWord enWord = new SimplifiedEnWord(e.getId(), e.getWord(), e.getViews(), e.getPronunciation(), listMeaning);
+
+			toBeReturn.add(enWord);
+		}
+		return toBeReturn;
+	}
+	@GetMapping(value = "/savedword-id/{userId}")
+	@ResponseBody
+	public List<String> getAllSavedWordIdOfUser(@PathVariable Long userId) {
+
+		return repository.getAllSavedWordId(userId);
 	}
 	
-//	@GetMapping(value = "/enwords")
-//	@ResponseBody
-//	public List<EnWord> allButLimit(@RequestParam(value = "limit", required = false) Integer limit,
-//			@RequestParam(value = "sort", required = false) String sortType) {
-//
-//		if (limit == null && sortType == null) {
-//			return repository.findAll();
-//		} else {
-//			Page<EnWord> page = repository.findAll(PageRequest.of(0, limit));
-//			return page.toList();
-//		}
-//	}
+	@DeleteMapping(value = "/{userId}/{wordId}")
+	@ResponseBody
+	public void deleteSavedWord(@PathVariable Long userId, @PathVariable Long wordId) {
 
-//	@PostMapping("/enwords")
-//	public EnWord newEnWord(@RequestBody EnWord newEnWord) {
-//		return repository.save(newEnWord);
-//	}
-//
-//	@GetMapping("enwords/{id}")
-//	EnWord one(@PathVariable int id) {
-//		EnWord enWord = repository.findById(id).orElseThrow(() -> new EnWordNotFoundException(id));
-//		return enWord;
-//	}
-//
-//	@PutMapping("/enwords/{id}")
-//	EnWord replaceEnWord(@RequestBody EnWord newEnWord, @PathVariable Integer id) {
-//
-//		return repository.findById(id).map(enWord -> {
-//
-//			enWord.setWord(newEnWord.getWord());
-//			enWord.setPronunciation(newEnWord.getPronunciation());
-//			enWord.setViews(newEnWord.getViews());
-//
-//			return repository.save(enWord);
-//		}).orElseGet(() -> {
-//
-//			newEnWord.setId(id);
-//			return repository.save(newEnWord);
-//
-//		});
-//	}
-//
-//	@DeleteMapping("/enwords/{id}")
-//	void deleteEmployee(@PathVariable Integer id) {
-//		repository.deleteById(id);
-//	}
+		repository.deleteSavedWord(userId, wordId);
+		return;
+	}
+
+	@PostMapping(value = "")
+	@ResponseBody
+	public String insertSavedWord(@RequestBody SavedWord savedWord) {
+		System.out.println(savedWord.getUser().getId()+"---------"+savedWord.getEnWord().getId());
+		repository.insertSavedWord(savedWord.getUser().getId(), savedWord.getEnWord().getId());
+		return "Lưu thành công";
+	}
 }

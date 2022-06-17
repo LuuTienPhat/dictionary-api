@@ -44,6 +44,7 @@ public class EnWordServiceImpl implements EnWordService {
 			log.info("Updating EnWord '{}' to the database", newEnWord.getWord());
 			updatedEnWord = enWordRepo.findById(id).map(enWord -> {
 				enWord.setWord(newEnWord.getWord());
+				enWord.setPronunciation(newEnWord.getPronunciation());
 				return enWordRepo.save(enWord);
 			}).orElseGet(() -> {
 				newEnWord.setId(id);
@@ -107,6 +108,11 @@ public class EnWordServiceImpl implements EnWordService {
 	@Override
 	public Long count() {
 		return enWordRepo.count();
+	}
+
+	@Override
+	public List<EnWord> searchWord(String query, PageRequest pageRequest) {
+		return enWordRepo.searchWord(query, pageRequest);
 	}
 	
 }

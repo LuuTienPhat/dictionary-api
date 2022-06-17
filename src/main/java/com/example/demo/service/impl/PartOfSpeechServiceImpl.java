@@ -86,4 +86,9 @@ public class PartOfSpeechServiceImpl implements PartOfSpeechService {
 		Page<PartOfSpeech> pages = partOfSpeechRepo.findAll(PageRequest.of(from, limit));
 		return pages.toList();
 	}
+
+	@Override
+	public List<PartOfSpeech> getPartOfSpeeches(String keyword) {
+		return partOfSpeechRepo.search(keyword);
+	}
 }

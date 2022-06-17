@@ -108,8 +108,8 @@ public class ProductController {
 					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Delete Product successfully!", null));
 		} catch (Exception e) {
 			// TODO: handle exception
-			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-					new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "Failed to delete Product!", null));
+			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new ResponseObject("failed",
+					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to delete Product!", null));
 		}
 
 		return responseEntity;
@@ -121,6 +121,24 @@ public class ProductController {
 		Long result = productService.count();
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseObject("ok", HttpStatus.OK.value(), "Product count", result));
+
+	}
+
+	@GetMapping(value = "/most-viewed")
+	@ResponseBody
+	ResponseEntity<ResponseObject> mostViewedProducts() {
+		ResponseEntity<ResponseObject> responseEntity = null;
+		List<Product> result = null;
+		result = productService.getProductsOrderByViewsAsc();
+		if (result != null) {
+			responseEntity = ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Fetch Products successfully!", result));
+		} else {
+			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new ResponseObject("failed",
+					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to fetch Products!", result));
+		}
+
+		return responseEntity;
 
 	}
 }

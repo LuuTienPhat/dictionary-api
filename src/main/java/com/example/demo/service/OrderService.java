@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.demo.entities.Order;
@@ -21,5 +23,11 @@ public interface OrderService {
 	
 	List<Order> getOrders(int state);
 	
+	List<Order> getOrders(LocalDateTime orderDateStart, LocalDateTime orderDateEnd, int state);
+	
+	List<Order> getOrdersOrderByOrderDateAsc(int state);
+	
 	Long count();
+	
+	Long countByOrderDateBetween(LocalDateTime orderDateStart, LocalDateTime orderDateEnd);
 }

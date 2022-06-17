@@ -4,7 +4,12 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,10 +26,11 @@ import lombok.Setter;
 public class Meaning {
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@JsonIgnore
+	@JsonBackReference
+	@JsonSetter
 	@ManyToOne
 	@JoinColumn(name = "en_word_id")
 	private EnWord enWord;
@@ -36,6 +42,7 @@ public class Meaning {
 	@Column(name = "meaning")
 	private String meaning;
 
+	@JsonManagedReference
 	@OneToMany(mappedBy = "meaning", fetch = FetchType.LAZY)
 	private List<Example> examples;
 

@@ -12,6 +12,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,8 +24,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.example.demo.domain.Base;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -40,7 +43,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+@EntityListeners(AuditingEntityListener.class)
+public class Product extends Base{
 	@Id
 	@Column(name = "id", updatable = false)
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -61,13 +65,13 @@ public class Product {
 	@Column(name = "description", nullable = true)
 	private String description;
 
-	@Column(name = "create_date", updatable = false)
+//	@Column(name = "create_date", updatable = false)
 //	@Temporal(TemporalType.DATE)
 //	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	private LocalDateTime createDate;
+//	private LocalDateTime createDate;
 
-	@Column(name = "views", nullable = true)
-	private int views;
+	@Column(name = "views")
+	private Integer views;
 
 //	@ManyToOne
 //	@JoinColumn(name = "category_id")

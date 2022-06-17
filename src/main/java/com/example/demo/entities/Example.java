@@ -10,8 +10,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +30,8 @@ public class Example {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@JsonIgnore
+	@JsonBackReference
+	@JsonSetter
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "meaning_id")
 	private Meaning meaning;

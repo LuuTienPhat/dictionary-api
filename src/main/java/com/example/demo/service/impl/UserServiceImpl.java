@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.domain.Role;
 import com.example.demo.domain.User;
+import com.example.demo.entities.Category;
 import com.example.demo.repo.RoleRepo;
 import com.example.demo.repo.UserRepo;
 import com.example.demo.service.UserService;
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 
 	@Override
 	public User saveUser(User user) {
-		log.info("Saving new user {} to the database", user.getName());
+		log.info("Saving new user {} to the database", user.getFirstname());
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		return userRepo.save(user);
 	}
@@ -98,6 +99,48 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	public User getUser(Long id) {
 		// TODO Auto-generated method stub
 		return userRepo.findById(id).get();
+	}
+
+	@Override
+	public Long count() {
+		return userRepo.count();
+	}
+
+	@Override
+	public User updateUser(Long id, User newUser) {
+		User updatedUser = null;
+		try {
+			log.info("Updating category '{}' to the database", newUser.getFirstname());
+			updatedUser = userRepo.findById(id).map(user -> {
+				
+				user.setFirstname(newUser.getFirstname());
+				user.setLastname(newUser.getLastname());
+				user.setPhone(newUser.getPhone());
+				user.setEmail(newUser.getEmail());
+				user.setBirthday(newUser.getBirthday());
+				user.setGender(newUser.getGender());
+				user.setAddress(newUser.getAddress());
+				user.setRoles(newUser.getRoles());
+				
+				return userRepo.save(user);
+			}).orElseGet(() -> {
+				newUser.setId(id);
+				return userRepo.save(newUser);
+			});
+		} catch (Exception e) {
+			log.info("Error while updating category '{}' to the database", newUser.getFirstname());
+			e.printStackTrace();
+		}
+
+		return updatedUser;
+	}
+
+	@Override
+	public List<User> getUsersAreCustomers() {
+		Role customerRole = roleRepo.findByName("ROLE_CUSTOMER");
+		List<User> customers = userRepo.findAll();
+		customers.removeIf(item -> !item.getRoles().contains(customerRole));
+		return customers;
 	}
 }
 

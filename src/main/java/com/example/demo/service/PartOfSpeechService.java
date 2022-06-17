@@ -20,5 +20,7 @@ public interface PartOfSpeechService {
 
 	List<PartOfSpeech> getPartOfSpeeches();
 	
+	List<PartOfSpeech> getPartOfSpeeches(String keyword);
+	
 	List<PartOfSpeech> getPartOfSpeeches(int from, int limit);
 }

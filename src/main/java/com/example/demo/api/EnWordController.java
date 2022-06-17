@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.Category;
 import com.example.demo.entities.EnWord;
+import com.example.demo.entities.Meaning;
 import com.example.demo.models.ResponseObject;
+import com.example.demo.models.SimplifiedEnWord;
 import com.example.demo.repo.EnWordRepo;
 import com.example.demo.service.CategoryService;
 import com.example.demo.service.EnWordService;
+import com.example.demo.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +41,7 @@ public class EnWordController {
 
 	@GetMapping(value = "")
 	@ResponseBody
-	public ResponseEntity<ResponseObject> allButLimit(
-			@RequestParam(value = "offset", required = false) Integer offset,
+	public ResponseEntity<ResponseObject> allButLimit(@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "limit", required = false) Integer limit,
 			@RequestParam(value = "search", required = false) String keyword) {
 
@@ -58,6 +61,61 @@ public class EnWordController {
 		}
 
 		return responseEntity;
+	}
+
+	@GetMapping(value = "/simplified")
+	@ResponseBody
+	public List<SimplifiedEnWord> ListSimplifiedEnWord(@RequestParam(value = "offset", required = false) Integer offset,
+			@RequestParam(value = "limit", required = false) Integer limit,
+			@RequestParam(value = "sort", required = false) String sortType) {
+		List<SimplifiedEnWord> tmp = new ArrayList<SimplifiedEnWord>();
+		if (limit == null && sortType == null) {
+//			return repository.findAll();
+		} else {
+			List<EnWord> page = enWordService.getEnWords(offset, limit);
+
+			for (EnWord e : page) {
+
+				Meaning m = new Meaning();
+				m.setMeaning(e.getMeanings().get(0).getMeaning());
+				m.setPartOfSpeech(e.getMeanings().get(0).getPartOfSpeech());
+				List<Meaning> listMeaning = new ArrayList<Meaning>();
+				listMeaning.add(m);
+				SimplifiedEnWord enWord = new SimplifiedEnWord(e.getId(), e.getWord(), e.getViews(),
+						e.getPronunciation(), listMeaning);
+				tmp.add(enWord);
+			}
+
+		}
+		return tmp;
+	}
+	
+	@GetMapping(value = "/simplified/search")
+	@ResponseBody
+	public List<SimplifiedEnWord> search(@RequestParam(value = "query", required = false) String query
+			, @RequestParam(value = "offset", required = false) Integer offset, @RequestParam(value = "limit", required = false) Integer limit,
+			@RequestParam(value = "sort", required = false) String sortType) {
+
+		if (query == null && sortType == null) {
+			return null;
+		} else if(offset==null && limit==null){
+			return null;
+		}else {
+			List<EnWord> listSearched = enWordService.searchWord(query, PageRequest.of(offset, limit));
+			List<SimplifiedEnWord> toBeReturn = new ArrayList<SimplifiedEnWord>();
+			for(EnWord e : listSearched) {
+
+				Meaning m = new Meaning();
+				m.setMeaning(e.getMeanings().get(0).getMeaning());
+				m.setPartOfSpeech(e.getMeanings().get(0).getPartOfSpeech()); 
+				List<Meaning> listMeaning = new ArrayList<Meaning>();
+				listMeaning.add(m);
+				SimplifiedEnWord enWord = new SimplifiedEnWord(e.getId(), e.getWord(), e.getViews(), e.getPronunciation(), listMeaning);
+
+				toBeReturn.add(enWord);
+			}
+			return toBeReturn;
+		}
 	}
 
 	@PostMapping(value = "")

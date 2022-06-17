@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.entities.Category;
 import com.example.demo.entities.PartOfSpeech;
 import com.example.demo.models.ResponseObject;
 import com.example.demo.service.PartOfSpeechService;
@@ -31,16 +32,27 @@ public class PartOfSpeechController {
 
 	@GetMapping(value = "")
 	@ResponseBody
-	public List<PartOfSpeech> allButLimit(@RequestParam(value = "limit", required = false) Integer limit,
-			@RequestParam(value = "sort", required = false) String sortType) {
-
-		if (limit == null && sortType == null) {
-			return partOfSpeechService.getPartOfSpeeches();
+	public ResponseEntity<ResponseObject> allButLimit(
+			@RequestParam(value = "offset", required = false) Integer offset,
+			@RequestParam(value = "limit", required = false) Integer limit,
+			@RequestParam(value = "search", required = false) String keyword) {
+		ResponseEntity<ResponseObject> responseEntity = null;
+		
+		List<PartOfSpeech> result = null;;
+		if (keyword != null) {
+			result = partOfSpeechService.getPartOfSpeeches(keyword);
 		} else {
-//			Page<PartOfSpeech> page = partOfSpeechService.findAll(PageRequest.of(0, limit));
-//			return page.toList();
-			return partOfSpeechService.getPartOfSpeeches(0, 10);
+			result = partOfSpeechService.getPartOfSpeeches();
 		}
+		if (result != null) {
+			responseEntity = ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Fetch categories successfully!", result));
+		} else {
+			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new ResponseObject("failed",
+					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to fetch categories!", result));
+		}
+
+		return responseEntity;
 	}
 
 	@PostMapping(value = "")
