@@ -78,6 +78,7 @@ public class OrderController {
 
 	@PostMapping(value = "")
 	public ResponseEntity<ResponseObject> newOrder(@RequestBody Order newOrder) {
+		System.out.println(newOrder.getOrderDetails().get(0).getProduct().getId());
 		ResponseEntity<ResponseObject> responseEntity = null;
 		Order result = orderService.insertOrder(newOrder);
 		if (result != null) {
