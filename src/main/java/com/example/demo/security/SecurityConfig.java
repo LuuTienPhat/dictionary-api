@@ -42,7 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 //		http.authorizeRequests().antMatchers(HttpMethod.POST,"/users/save/**").hasAnyAuthority("ROLE_MANAGER");
 		http.authorizeRequests().antMatchers("/users/**").hasAnyAuthority("ROLE_MANAGER");
 		
-		http.authorizeRequests().antMatchers(HttpMethod.GET, "/enwords").permitAll();
+		http.authorizeRequests().antMatchers(HttpMethod.GET, "/enwords/**").permitAll();
+		http.authorizeRequests().antMatchers(HttpMethod.GET, "/enwords/simplified/**").permitAll();
 		http.authorizeRequests().antMatchers("/enwords/**").hasAnyAuthority("ROLE_ADMIN_WORD", "ROLE_MANAGER");
 		http.authorizeRequests().antMatchers("/partofspeeches/**").hasAnyAuthority("ROLE_ADMIN_WORD", "ROLE_MANAGER");
 		http.authorizeRequests().antMatchers("/meanings/**").hasAnyAuthority("ROLE_ADMIN_WORD", "ROLE_MANAGER");
