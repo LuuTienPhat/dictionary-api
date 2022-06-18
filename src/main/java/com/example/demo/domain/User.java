@@ -23,7 +23,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.example.demo.entities.EnWord;
 import com.example.demo.entities.Feedback;
+import com.example.demo.entities.Invoice;
+import com.example.demo.entities.Order;
 import com.example.demo.entities.SavedWord;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,6 +44,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class User extends Base{
 
 	@Id
@@ -84,5 +92,13 @@ public class User extends Base{
 
 	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
 	private List<Feedback> feedbacks = new ArrayList<>();
+	
+	@JsonBackReference
+	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+	private List<Order> orders = new ArrayList<>();
+	
+	@JsonBackReference
+	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+	private List<Invoice> invoices = new ArrayList<>();
 
 }

@@ -38,12 +38,12 @@ public class OrderDetail {
 	// @EmbeddedId
 //	private OrderDetailKey id;
 
-	@JsonIgnore
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id")
 	private Order order;
 
-	@JsonIgnore
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id")
 	private Product product;

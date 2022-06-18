@@ -44,7 +44,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Product extends Base{
+public class Product extends Base {
 	@Id
 	@Column(name = "id", updatable = false)
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -65,30 +65,28 @@ public class Product extends Base{
 	@Column(name = "description", nullable = true)
 	private String description;
 
-//	@Column(name = "create_date", updatable = false)
-//	@Temporal(TemporalType.DATE)
-//	@DateTimeFormat(pattern = "dd/MM/yyyy")
-//	private LocalDateTime createDate;
-
 	@Column(name = "views")
 	private Integer views;
 
-//	@ManyToOne
-//	@JoinColumn(name = "category_id")
-//	private Category category;
+	@JsonManagedReference
+	@ManyToOne
+	@JoinColumn(name = "category_id")
+	private Category category;
 
 //	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 //	private List<CartDetailEntity> cartDetails;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private List<OrderDetail> orderDetails;	
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+	private List<OrderDetail> orderDetails;
 
+//	@JsonBackReference
 //	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 //	private List<ImageEntity> images;
 
-//	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-//	private List<InvoiceDetail> invoiceDetails;
+	@JsonBackReference
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+	private List<InvoiceDetail> invoiceDetails;
 
 //	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 //	private List<FavoriteProductEntity> favoriteProducts;
