@@ -22,6 +22,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.example.demo.domain.Base;
 import com.example.demo.domain.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,6 +53,7 @@ public class Category extends Base {
 	@Column(name = "description")
 	private String description;
 
-//	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY, orphanRemoval = true)
-//	private List<Product> products = new ArrayList<Product>();
+	@JsonBackReference
+	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+	private List<Product> products = new ArrayList<Product>();
 }
