@@ -69,10 +69,10 @@ public class SavedWordController {
 	
 	@DeleteMapping(value = "/{userId}/{wordId}")
 	@ResponseBody
-	public void deleteSavedWord(@PathVariable Long userId, @PathVariable Long wordId) {
+	public String deleteSavedWord(@PathVariable Long userId, @PathVariable Long wordId) {
 
 		repository.deleteSavedWord(userId, wordId);
-		return;
+		return "Unsave word successfully";
 	}
 
 	@PostMapping(value = "")
