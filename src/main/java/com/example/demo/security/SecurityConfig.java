@@ -51,12 +51,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		
 		http.authorizeRequests().antMatchers(HttpMethod.POST,"/orders").hasAnyAuthority("ROLE_ADMIN_SALE", "ROLE_MANAGER", "ROLE_CUSTOMER");
 		http.authorizeRequests().antMatchers(HttpMethod.GET,"/products").hasAnyAuthority("ROLE_ADMIN_SALE", "ROLE_MANAGER", "ROLE_CUSTOMER");
-		
+		http.authorizeRequests().antMatchers(HttpMethod.GET,"/products/**").hasAnyAuthority("ROLE_ADMIN_SALE", "ROLE_MANAGER", "ROLE_CUSTOMER");
 		http.authorizeRequests().antMatchers("/categories/**").hasAnyAuthority("ROLE_ADMIN_SALE", "ROLE_MANAGER");
 		http.authorizeRequests().antMatchers("/orders/**").hasAnyAuthority("ROLE_ADMIN_SALE", "ROLE_MANAGER");
 		http.authorizeRequests().antMatchers("/products/**").hasAnyAuthority("ROLE_ADMIN_SALE", "ROLE_MANAGER");
 		http.authorizeRequests().antMatchers("/invoices/**").hasAnyAuthority("ROLE_ADMIN_SALE", "ROLE_MANAGER");
 		http.authorizeRequests().antMatchers("/uploads/**").permitAll();
+		
+		http.authorizeRequests().antMatchers("/feedbacks").permitAll();
 		
 		http.authorizeRequests().anyRequest().permitAll();
 		http.addFilter(customAuthenticationFilter);

@@ -107,8 +107,14 @@ public class EnWordController {
 			for(EnWord e : listSearched) {
 
 				Meaning m = new Meaning();
-				m.setMeaning(e.getMeanings().get(0).getMeaning());
-				m.setPartOfSpeech(e.getMeanings().get(0).getPartOfSpeech()); 
+				try {
+					m.setMeaning(e.getMeanings().get(0).getMeaning());
+					m.setPartOfSpeech(e.getMeanings().get(0).getPartOfSpeech()); 
+				}catch (Exception ex) {
+					// TODO: handle exception
+					ex.printStackTrace();
+				}
+				
 				List<Meaning> listMeaning = new ArrayList<Meaning>();
 				listMeaning.add(m);
 				SimplifiedEnWord enWord = new SimplifiedEnWord(e.getId(), e.getWord(), e.getViews(), e.getPronunciation(), listMeaning);
