@@ -45,7 +45,12 @@ public class UserNoteController {
 		if (userId == null && sortType == null) {
 			return "";
 		} else {
-			String res = repository.getNote(wordId, userId).get(0).getNote();
+			String res = null;
+			try{
+				res = repository.getNote(wordId, userId).get(0).getNote();
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
 			if (res == null) {
 				return "";
 			}

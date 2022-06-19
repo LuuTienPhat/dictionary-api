@@ -41,7 +41,7 @@ public class SavedWordController {
 	
 	private final SavedWordRepository repository;
 	
-	@GetMapping(value = "/{userId}")
+	@GetMapping(value = "/simplified/{userId}")
 	@ResponseBody
 	public List<SimplifiedEnWord> allSavedWordOfUser(@PathVariable Long userId) {
 
@@ -60,7 +60,7 @@ public class SavedWordController {
 		}
 		return toBeReturn;
 	}
-	@GetMapping(value = "/savedword-id/{userId}")
+	@GetMapping(value = "/id/{userId}")
 	@ResponseBody
 	public List<String> getAllSavedWordIdOfUser(@PathVariable Long userId) {
 
