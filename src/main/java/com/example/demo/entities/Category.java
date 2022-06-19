@@ -38,7 +38,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Category extends Base {
 	@Id
 	@Column(name = "id", updatable = false)
@@ -56,6 +55,7 @@ public class Category extends Base {
 	@Column(name = "description")
 	private String description;
 
+	@JsonBackReference("category_product")
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
 	private List<Product> products = new ArrayList<Product>();
 }

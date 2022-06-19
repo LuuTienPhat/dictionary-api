@@ -68,6 +68,7 @@ public class Product extends Base {
 	@Column(name = "views")
 	private Integer views;
 
+	@JsonManagedReference("category_product")
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	private Category category;
@@ -75,7 +76,7 @@ public class Product extends Base {
 //	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 //	private List<CartDetailEntity> cartDetails;
 
-//	@JsonBackReference
+	@JsonBackReference
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
 	private List<OrderDetail> orderDetails;
 
@@ -83,7 +84,7 @@ public class Product extends Base {
 //	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 //	private List<ImageEntity> images;
 
-//	@JsonBackReference
+	@JsonBackReference
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
 	private List<InvoiceDetail> invoiceDetails;
 

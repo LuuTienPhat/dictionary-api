@@ -16,7 +16,9 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,47 +32,35 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class OrderDetail {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	// @EmbeddedId
-//	private OrderDetailKey id;
 
-	@JsonBackReference
-	@ManyToOne(fetch = FetchType.LAZY)
+//	@JsonBackReference
+	@ManyToOne
 	@JoinColumn(name = "order_id")
 	private Order order;
 
-	@JsonBackReference
-	@ManyToOne(fetch = FetchType.LAZY)
+//	@JsonBackReference
+	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
 
 	@Column(name = "quantity")
 	private int quantity;
 
-	public Long getProductId() {
-		return this.product == null ? null : this.product.getId();
-	}
-	
-	public Float getProductPrice() {
-		return this.product == null ? null : this.product.getPrice();	}
-
-	public Long getOrderId() {
-		return this.order == null ? null : this.order.getId();
-	}
-
-//	@Embeddable
-//	public static class OrderDetailKey implements Serializable {
-//		private static final long serialVersionUID = 1L;
-//		
-//		@Column(name = "order_id")
-//		private String orderId;
-//		
-//		@Column(name = "product_id")
-//	    private String productId;
-//		
+//	public Long getProductId() {
+//		return this.product == null ? null : this.product.getId();
 //	}
+//	
+//	public Float getProductPrice() {
+//		return this.product == null ? null : this.product.getPrice();	}
+//
+//	public Long getOrderId() {
+//		return this.order == null ? null : this.order.getId();
+//	}
+
 }

@@ -2,6 +2,8 @@ package com.example.demo.api;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -91,13 +93,42 @@ public class UserResource {
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<User> one(@PathVariable Long id) {
-		return ResponseEntity.ok().body(userService.getUser(id));
+	public ResponseEntity<ResponseObject> one(@PathVariable Long id) {
+		ResponseEntity<ResponseObject> responseEntity = null;
+		User result = userService.getUser(id);
+		if (result != null) {
+			responseEntity = ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "User found!", result));
+		} else {
+			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
+					.body(new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "User NOT found!", result));
+		}
+
+		return responseEntity;
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ResponseObject> replaceCategory(@RequestBody User newUser, @PathVariable Long id) {
+	public ResponseEntity<ResponseObject> replaceUser(@RequestBody FormUser formUser, @PathVariable Long id) {
 		ResponseEntity<ResponseObject> responseEntity = null;
+
+		User newUser = new User();
+		newUser.setId(id);
+		newUser.setAddress(formUser.getAddress());
+		newUser.setBirthday(LocalDate.parse(formUser.getBirthday(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+		newUser.setPassword(formUser.getPassword());
+		newUser.setEmail(formUser.getEmail());
+		newUser.setFirstname(formUser.getFirstname());
+		newUser.setLastname(formUser.getLastname());
+		newUser.setGender(formUser.getGender());
+		newUser.setUsername(formUser.getUsername());
+		newUser.setPhone(formUser.getPhone());
+
+		Role role = new Role();
+		role.setId(formUser.getRoleId());
+		List<Role> roles = new ArrayList<Role>();
+		roles.add(role);
+		newUser.setRoles(roles);
+
 		User result = userService.updateUser(id, newUser);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
@@ -111,7 +142,25 @@ public class UserResource {
 	}
 
 	@PostMapping(value = "")
-	public ResponseEntity<ResponseObject> newUser(@RequestBody User newUser) {
+	public ResponseEntity<ResponseObject> newUser(@RequestBody FormUser formUser) {
+
+		User newUser = new User();
+		newUser.setAddress(formUser.getAddress());
+		newUser.setBirthday(LocalDate.parse(formUser.getBirthday(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+		newUser.setPassword(formUser.getPassword());
+		newUser.setEmail(formUser.getEmail());
+		newUser.setFirstname(formUser.getFirstname());
+		newUser.setLastname(formUser.getLastname());
+		newUser.setGender(formUser.getGender());
+		newUser.setUsername(formUser.getUsername());
+		newUser.setPhone(formUser.getPhone());
+
+		Role role = new Role();
+		role.setId(formUser.getRoleId());
+		List<Role> roles = new ArrayList<Role>();
+		roles.add(role);
+		newUser.setRoles(roles);
+
 		ResponseEntity<ResponseObject> responseEntity = null;
 		User result = userService.saveUser(newUser);
 		if (result != null) {
@@ -194,4 +243,19 @@ public class UserResource {
 class RoleToUserForm {
 	private String username;
 	private String roleName;
+}
+
+@Data
+class FormUser {
+	Long userId;
+	Long roleId;
+	String firstname;
+	String lastname;
+	Integer gender;
+	String email;
+	String phone;
+	String birthday;
+	String address;
+	String username;
+	String password;
 }

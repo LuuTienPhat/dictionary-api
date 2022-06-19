@@ -60,16 +60,27 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product getProduct(Long id) {
-		Product Product = productRepo.findById(id).get();
-		return Product;
+		Product product = null;
+		try {
+			product = productRepo.findById(id).get();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return product;
 	}
 
 	@Override
 	public Product getProduct(String name) {
-		Product Product = productRepo.findByName(name);
-		return Product;
+		Product product = null;
+		try {
+			product = productRepo.findByName(name);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return product;
 	}
-
 
 	@Override
 	public List<Product> getProducts() {

@@ -19,6 +19,7 @@ import com.example.demo.entities.Category;
 import com.example.demo.models.ResponseObject;
 import com.example.demo.service.CategoryService;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,13 +32,13 @@ public class CategoryController {
 
 	@GetMapping(value = "")
 	@ResponseBody
-	public ResponseEntity<ResponseObject> allButLimit(
-			@RequestParam(value = "offset", required = false) Integer offset,
+	public ResponseEntity<ResponseObject> allButLimit(@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "limit", required = false) Integer limit,
 			@RequestParam(value = "search", required = false) String keyword) {
 		ResponseEntity<ResponseObject> responseEntity = null;
-		
-		List<Category> result = null;;
+
+		List<Category> result = null;
+		;
 		if (keyword != null) {
 			result = categoryService.getCategories(keyword);
 		} else {
@@ -55,8 +56,13 @@ public class CategoryController {
 	}
 
 	@PostMapping(value = "")
-	public ResponseEntity<ResponseObject> newCategory(@RequestBody Category newCategory) {
+	public ResponseEntity<ResponseObject> newCategory(@RequestBody FormCategory formCategory) {
 		ResponseEntity<ResponseObject> responseEntity = null;
+
+		Category newCategory = new Category();
+		newCategory.setDescription(formCategory.getDescription());
+		newCategory.setName(formCategory.getName());
+
 		Category result = categoryService.insertCategory(newCategory);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
@@ -76,18 +82,25 @@ public class CategoryController {
 		Category result = categoryService.getCategory(id);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Search category successfully!", result));
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Fetch category successfully!", result));
 		} else {
 			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-					new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "category not found!", result));
+					new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "Category not found!", result));
 		}
 
 		return responseEntity;
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ResponseObject> replaceCategory(@RequestBody Category newCategory, @PathVariable Long id) {
+	public ResponseEntity<ResponseObject> replaceCategory(@RequestBody FormCategory formCategory,
+			@PathVariable Long id) {
 		ResponseEntity<ResponseObject> responseEntity = null;
+
+		Category newCategory = new Category();
+		newCategory.setDescription(formCategory.getDescription());
+		newCategory.setName(formCategory.getName());
+		newCategory.setId(formCategory.id);
+
 		Category result = categoryService.updateCategory(id, newCategory);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
@@ -115,7 +128,7 @@ public class CategoryController {
 
 		return responseEntity;
 	}
-	
+
 	@GetMapping(value = "/count")
 	@ResponseBody
 	ResponseEntity<ResponseObject> count() {
@@ -124,4 +137,11 @@ public class CategoryController {
 				.body(new ResponseObject("ok", HttpStatus.OK.value(), "Category count", result));
 
 	}
+}
+
+@Data
+class FormCategory {
+	Long id;
+	String name;
+	String description;
 }

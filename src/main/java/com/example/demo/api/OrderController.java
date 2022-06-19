@@ -142,11 +142,11 @@ public class OrderController {
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<ResponseObject> replaceOrder(@RequestBody FormOrder formOrder, @PathVariable Long id) {
 		ResponseEntity<ResponseObject> responseEntity = null;
-		
+
 		Order newOrder = new Order();
 		newOrder.setState(formOrder.getState());
 		newOrder.setId(id);
-		
+
 		Order result = orderService.updateOrder(id, newOrder);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)

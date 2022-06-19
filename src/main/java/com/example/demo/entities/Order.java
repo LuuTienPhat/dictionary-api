@@ -26,7 +26,9 @@ import com.example.demo.domain.Base;
 import com.example.demo.domain.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +42,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Order {
 	@Id
 	@Column(name = "id")
@@ -73,19 +76,19 @@ public class Order {
 	@Column(name = "state")
 	private int state;
 
-	@JsonManagedReference(value = "order_order_detail")
+//	@JsonManagedReference(value = "order_order_detail")
 	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
 	private List<OrderDetail> orderDetails;
 
-	@JsonBackReference
+//	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@JsonGetter
-	private Long getUserId() {
-		return this.user != null ? user.getId() : null;
-	}
+//	@JsonGetter
+//	private Long getUserId() {
+//		return this.user != null ? user.getId() : null;
+//	}
 
 	/*
 	 * public float getOrderTotal() { return orderTotal; }
