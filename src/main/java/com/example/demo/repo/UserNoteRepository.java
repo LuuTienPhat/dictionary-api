@@ -23,10 +23,9 @@ public interface UserNoteRepository extends JpaRepository<UserNote, Long> {
 	@Modifying
 	@Query(value = "UPDATE user_note SET note = ?3 WHERE word_id = ?1 AND user_id = ?2", nativeQuery=true)
 	void updateOneNote(Long wordId, Long userId, String note);
-	
 	@Transactional
 	@Modifying
-	@Query(value = "DELETE user_note WHERE word_id = ?2 AND user_id = ?1", nativeQuery=true)
+	@Query(value = "DELETE FROM user_note WHERE word_id = ?2 AND user_id = ?1", nativeQuery=true)
 	void deleteNote(Long userId, Long wordId);
 
 }
