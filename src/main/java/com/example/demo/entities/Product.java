@@ -75,6 +75,7 @@ public class Product extends Base {
 //	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 //	private List<CartDetailEntity> cartDetails;
 
+//	@JsonIgnore
 //	@JsonBackReference
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
 	private List<OrderDetail> orderDetails;
