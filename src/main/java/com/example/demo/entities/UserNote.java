@@ -14,7 +14,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.example.demo.domain.User;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,6 +27,7 @@ import lombok.Setter;
 @Table(name = "user_note")
 @Getter
 @Setter
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class UserNote {
 	@Id
 	@Column(name = "id")
@@ -32,12 +35,12 @@ public class UserNote {
 	private Long id;
 
 	@ManyToOne
-//	@JsonManagedReference
+	@JsonManagedReference
 	@JoinColumn(name = "user_id")
 	private User user;
 
 	@ManyToOne
-//	@JsonManagedReference
+	@JsonManagedReference
 	@JoinColumn(name = "word_id")
 	private EnWord enWord;
 	

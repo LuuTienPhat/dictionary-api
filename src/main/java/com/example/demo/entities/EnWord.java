@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import com.example.demo.domain.Base;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AccessLevel;
