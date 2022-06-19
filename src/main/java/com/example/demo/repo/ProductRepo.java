@@ -15,7 +15,7 @@ import com.example.demo.entities.Product;
 public interface ProductRepo extends JpaRepository<Product, Long> {
 	Product findByName(String name);
 
-	List<Product> findByOrderByViewsAsc();
+	List<Product> findTop5ByOrderByViewsDesc();
 
 	@Transactional
 	@Modifying

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.entities.Category;
 import com.example.demo.entities.EnWord;
 import com.example.demo.entities.Meaning;
+import com.example.demo.entities.Product;
 import com.example.demo.models.ResponseObject;
 import com.example.demo.models.SimplifiedEnWord;
 import com.example.demo.repo.EnWordRepo;
@@ -187,6 +188,24 @@ public class EnWordController {
 		Long result = enWordService.count();
 		return responseEntity = ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseObject("ok", HttpStatus.OK.value(), "Enword count", result));
+
+	}
+	
+	@GetMapping(value = "/most-viewed")
+	@ResponseBody
+	ResponseEntity<ResponseObject> mostViewedWords() {
+		ResponseEntity<ResponseObject> responseEntity = null;
+		List<EnWord> result = null;
+		result = enWordService.getEnWordsOrderByViewsDesc();
+		if (result != null) {
+			responseEntity = ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Fetch EnWords successfully!", result));
+		} else {
+			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new ResponseObject("failed",
+					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to fetch EnWords!", result));
+		}
+
+		return responseEntity;
 
 	}
 }

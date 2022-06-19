@@ -23,7 +23,7 @@ public interface SavedWordRepository extends JpaRepository<SavedWord, Long> {
 	
 	@Transactional
 	@Modifying
-	@Query(value = "INSERT INTO saved_word (user_id, word_id) VALUES (?1, ?2)", nativeQuery = true)
+	@Query(value = "INSERT INTO saved_word (user_id, en_word_id) VALUES (?1, ?2)", nativeQuery = true)
 	void insertSavedWord(Long userId, Long wordId);
 	
 }

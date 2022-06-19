@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 
 import com.example.demo.entities.EnWord;
+import com.example.demo.entities.Product;
 
 public interface EnWordService {
 	EnWord insertEnWord(EnWord enWord);
@@ -24,6 +25,8 @@ public interface EnWordService {
 	List<EnWord> getEnWords(String keyword);
 	
 	List<EnWord> searchWord(String query, PageRequest pageRequest);
+	
+	List<EnWord> getEnWordsOrderByViewsDesc();
 	
 	Long count();
 }

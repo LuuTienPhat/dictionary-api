@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.PageRequest;
 
 import com.example.demo.entities.EnWord;
+import com.example.demo.entities.Product;
 
 public interface EnWordRepo extends JpaRepository<EnWord, Long> {
 	EnWord findByWord(String word);
@@ -25,4 +26,6 @@ public interface EnWordRepo extends JpaRepository<EnWord, Long> {
 	
 	@Query("SELECT e FROM EnWord e WHERE e.word LIKE ?1%")
 	List<EnWord> searchWord(String query);
+	
+	List<EnWord> findTop5ByOrderByViewsDesc();
 }

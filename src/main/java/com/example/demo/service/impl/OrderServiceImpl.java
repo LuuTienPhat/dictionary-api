@@ -1,8 +1,7 @@
 package com.example.demo.service.impl;
 
-import java.time.LocalDate;
+import java.lang.Thread.State;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -10,10 +9,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.entities.InvoiceDetail;
 import com.example.demo.entities.Order;
-import com.example.demo.entities.Order;
+import com.example.demo.entities.OrderDetail;
+import com.example.demo.entities.Product;
+import com.example.demo.repo.OrderDetailRepo;
 import com.example.demo.repo.OrderRepo;
+import com.example.demo.repo.ProductRepo;
 import com.example.demo.service.OrderService;
+import com.example.demo.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +29,19 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderServiceImpl implements OrderService {
 
 	private final OrderRepo orderRepo;
+	private final OrderDetailRepo orderDetailRepo;
+	private final ProductService productService;
 
 	@Override
 	public Order insertOrder(Order order) {
 		Order result = null;
 		try {
 			result = orderRepo.save(order);
+
+			for (OrderDetail orderDetail : order.getOrderDetails()) {
+				orderDetailRepo.save(orderDetail);
+			}
+
 			log.info("Saving new Order '{}' to the database", order.getId());
 		} catch (Exception e) {
 			log.info("Error while inserting Order '{}' to the database", order.getId());
@@ -51,7 +62,19 @@ public class OrderServiceImpl implements OrderService {
 //				order.setShipAddress(newOrder.getShipAddress());
 //				order.setShipNote(newOrder.getShipNote());
 //				order.setShipPhone(newOrder.getShipPhone());
-				order.setState(newOrder.getState());
+				if (order.getState() != 2) {
+					order.setState(newOrder.getState());
+
+					if (newOrder.getState() == 2) {
+						for (OrderDetail orderDetail : order.getOrderDetails()) {
+							Product product = productService.getProduct(orderDetail.getProduct().getId());
+							int oldQuant = product.getQuantity();
+							int newQuant = oldQuant - orderDetail.getQuantity();
+							product.setQuantity(newQuant);
+							productService.updateProduct(product.getId(), product);
+						}
+					}
+				}
 				return orderRepo.save(order);
 			}).orElseGet(() -> {
 				newOrder.setId(id);
@@ -144,20 +167,16 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public Long countByOrderDateBetween(LocalDateTime orderDateStart, LocalDateTime orderDateEnd) {
-		List<Order> ordersThisMonth = orderRepo.findAllByOrderDateBetween(
-				orderDateStart,
-				orderDateEnd);
+		List<Order> ordersThisMonth = orderRepo.findAllByOrderDateBetween(orderDateStart, orderDateEnd);
 		return Long.valueOf(ordersThisMonth.size());
 	}
 
 	@Override
 	public List<Order> getOrders(LocalDateTime orderDateStart, LocalDateTime orderDateEnd, int state) {
-		List<Order> orders = orderRepo.findAllByOrderDateBetween(
-				orderDateStart,
-				orderDateEnd);
-		
+		List<Order> orders = orderRepo.findAllByOrderDateBetween(orderDateStart, orderDateEnd);
+
 		orders.removeIf(item -> item.getState() != state);
 		return orders;
 	}
-	
+
 }

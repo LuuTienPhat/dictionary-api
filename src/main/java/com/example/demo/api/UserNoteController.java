@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.domain.User;
+import com.example.demo.entities.EnWord;
 import com.example.demo.entities.UserNote;
 import com.example.demo.repo.UserNoteRepository;
+
+import lombok.Data;
 
 @RestController
 public class UserNoteController {
@@ -79,7 +83,18 @@ public class UserNoteController {
 //	}
 
 	@PostMapping("/user-note")
-	public String UserNote(@RequestBody UserNote userNote) {
+	public String UserNote(@RequestBody FormNote formNote) {
+		UserNote userNote = new UserNote();
+		EnWord enWord = new EnWord();
+		enWord.setId(formNote.getWordId());
+		userNote.setEnWord(enWord);
+		
+		User user = new User();
+		user.setId(formNote.getUserId());
+		userNote.setUser(user);
+		
+		userNote.setNote(formNote.getNote());
+		
 		System.out.println(
 				userNote.getUser().getId() + "-------" + userNote.getEnWord().getId() + "---" + userNote.getNote());
 		if (repository.getNote(userNote.getEnWord().getId(), userNote.getUser().getId()).size() == 0) {
@@ -90,4 +105,11 @@ public class UserNoteController {
 		return "Update successfully";
 	}
 
+}
+
+@Data
+class FormNote {
+	Long userId;
+	Long wordId;
+	String note;
 }

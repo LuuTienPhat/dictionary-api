@@ -2,9 +2,14 @@ package com.example.demo.service.impl;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +19,8 @@ import com.example.demo.entities.Category;
 import com.example.demo.entities.Order;
 import com.example.demo.entities.OrderDetail;
 import com.example.demo.entities.Product;
+import com.example.demo.models.OrderStatistics;
+import com.example.demo.models.Revenue;
 import com.example.demo.repo.CategoryRepo;
 import com.example.demo.repo.OrderRepo;
 import com.example.demo.repo.ProductRepo;
@@ -35,6 +42,57 @@ public class StatServiceImpl implements StatService {
 	private final OrderRepo orderRepo;
 	private final CategoryRepo categoryRepo;
 	private final ProductRepo productRepo;
+
+	// GET ORDER STATISTICS
+	@Override
+	public List<OrderStatistics> getOrderStatistics() {
+		List<OrderStatistics> orderStatisticsByMonths = new ArrayList<OrderStatistics>();
+
+		for (int i = 0; i < 6; i++) {
+			LocalDate now = LocalDate.now().minusMonths(i);
+			LocalDate lastDayOfMonth = now.with(TemporalAdjusters.lastDayOfMonth());
+			LocalDate firstDayOfMonth = now.with(TemporalAdjusters.firstDayOfMonth());
+
+			List<Order> orders = orderRepo.findAllByOrderDateBetween(firstDayOfMonth.atStartOfDay(),
+					lastDayOfMonth.atStartOfDay());
+
+			orders.removeIf(item -> item.getState() != 2);
+
+			OrderStatistics orderStatistics = new OrderStatistics();
+			orderStatistics.setDate(java.sql.Date.valueOf(now));
+			orderStatistics.setNumber(orders.size());
+			orderStatisticsByMonths.add(orderStatistics);
+		}
+
+		return orderStatisticsByMonths;
+	}
+
+	// GET MONTHLY REVENUE
+	@Override
+	public List<Revenue> getMonthlyRevenue(int numberOfMonths) {
+		List<Revenue> montlyRevenue = new ArrayList<Revenue>();
+
+		for (int i = 0; i < numberOfMonths; i++) {
+			LocalDate now = LocalDate.now().minusMonths(i);
+			LocalDate lastDayOfMonth = now.with(TemporalAdjusters.lastDayOfMonth());
+			LocalDate firstDayOfMonth = now.with(TemporalAdjusters.firstDayOfMonth());
+
+			List<Order> ordersLastMonth = orderRepo.findAllByOrderDateBetween(firstDayOfMonth.atStartOfDay(),
+					lastDayOfMonth.atStartOfDay());
+
+			ordersLastMonth.removeIf(item -> item.getState() != 2);
+
+			float money = 0;
+			for (Order order : ordersLastMonth) {
+				money += Order.getTotalPrice(order);
+			}
+
+			Revenue revenue = new Revenue(java.sql.Date.valueOf(now), money);
+			montlyRevenue.add(0, revenue);
+		}
+
+		return montlyRevenue;
+	}
 
 	// GET GROWTH PERCENTAGE OF USERS BY MONTH
 	@Override

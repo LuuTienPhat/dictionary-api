@@ -12,9 +12,11 @@ import javax.persistence.Table;
 import com.example.demo.domain.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,18 +29,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class InvoiceDetail {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", updatable = false)
 	private Long id;
 
-	@JsonBackReference
+//	@JsonBackReference(value = "invoice_invoice_detail")
 	@ManyToOne
 	@JoinColumn(name = "invoice_id")
 	private Invoice invoice;
 
-	@JsonManagedReference
+//	@JsonManagedReference(value = "product_invoice_detail")
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
@@ -49,8 +52,8 @@ public class InvoiceDetail {
 	@Column(name = "price")
 	private float price;
 
-	@JsonGetter
-	private Long getInvoiceId() {
-		return this.invoice == null ? null : this.invoice.getId();
-	}
+//	@JsonGetter
+//	private Long getInvoiceId() {
+//		return this.invoice == null ? null : this.invoice.getId();
+//	}
 }
