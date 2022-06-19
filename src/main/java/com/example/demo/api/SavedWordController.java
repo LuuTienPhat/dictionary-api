@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.domain.User;
 import com.example.demo.entities.EnWord;
 import com.example.demo.entities.Meaning;
 import com.example.demo.entities.SavedWord;
@@ -28,6 +29,7 @@ import com.example.demo.repo.SavedWordRepo;
 import com.example.demo.repo.SavedWordRepository;
 import com.example.demo.service.FeedbackService;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -75,9 +77,25 @@ public class SavedWordController {
 
 	@PostMapping(value = "")
 	@ResponseBody
-	public String insertSavedWord(@RequestBody SavedWord savedWord) {
+	public String insertSavedWord(@RequestBody FormSavedWord formSavedWord) {
+		
+		SavedWord savedWord = new SavedWord();
+		EnWord enWord = new EnWord();
+		enWord.setId(formSavedWord.getWordId());
+		savedWord.setEnWord(enWord);
+		
+		User user = new User();
+		user.setId(formSavedWord.getUserId());
+		savedWord.setUser(user);
+		
 		System.out.println(savedWord.getUser().getId()+"---------"+savedWord.getEnWord().getId());
 		repository.insertSavedWord(savedWord.getUser().getId(), savedWord.getEnWord().getId());
 		return "Lưu thành công";
 	}
+}
+
+@Data
+class FormSavedWord {
+	Long userId;
+	Long wordId;
 }

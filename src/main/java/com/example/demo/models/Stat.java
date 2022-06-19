@@ -20,6 +20,11 @@ public class Stat {
 	private Long numberOfCustomers;
 	private Long numberOfCategories;
 	private Long numberOfOrdersThisMonth;
+	private Integer numberOfImportInvoice;
+	private Integer numberOfExportInvoice;
+	
+	
 	private Float totalRevenueToday;
 	private Float totalRevenueThisMonth;
+	
 }

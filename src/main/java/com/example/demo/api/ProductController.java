@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.entities.Category;
 import com.example.demo.entities.Product;
 import com.example.demo.models.ResponseObject;
 import com.example.demo.service.ProductService;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,8 +57,19 @@ public class ProductController {
 
 	@PostMapping(value = "")
 	@ResponseBody
-	public ResponseEntity<ResponseObject> newProduct(@RequestBody Product newProduct) {
+	public ResponseEntity<ResponseObject> newProduct(@RequestBody FormProduct formProduct) {
 		ResponseEntity<ResponseObject> responseEntity = null;
+		
+		Product newProduct = new Product();
+		newProduct.setName(formProduct.getName());
+		newProduct.setDescription(formProduct.getDescription());
+		newProduct.setUnit(formProduct.getUnit());
+		newProduct.setPrice(formProduct.getPrice());
+		
+		Category category = new Category();
+		category.setId(formProduct.getCategoryId());
+		newProduct.setCategory(category);
+		
 		Product result = productService.insertProduct(newProduct);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
@@ -85,8 +98,20 @@ public class ProductController {
 
 	@PutMapping(value = "/{id}")
 	@ResponseBody
-	ResponseEntity<ResponseObject> replaceProduct(@RequestBody Product newProduct, @PathVariable Long id) {
+	ResponseEntity<ResponseObject> replaceProduct(@RequestBody FormProduct formProduct, @PathVariable Long id) {
+		
+		Product newProduct = new Product();
+		newProduct.setId(formProduct.getId());
+		newProduct.setName(formProduct.getName());
+		newProduct.setDescription(formProduct.getDescription());
+		newProduct.setUnit(formProduct.getUnit());
+		newProduct.setPrice(formProduct.getPrice());
+		
+		Category category = new Category();
+		category.setId(formProduct.getCategoryId());
+		newProduct.setCategory(category);
 		ResponseEntity<ResponseObject> responseEntity = null;
+		
 		Product result = productService.updateProduct(id, newProduct);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
@@ -129,7 +154,7 @@ public class ProductController {
 	ResponseEntity<ResponseObject> mostViewedProducts() {
 		ResponseEntity<ResponseObject> responseEntity = null;
 		List<Product> result = null;
-		result = productService.getProductsOrderByViewsAsc();
+		result = productService.getProductsOrderByViewsDesc();
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Fetch Products successfully!", result));
@@ -141,4 +166,14 @@ public class ProductController {
 		return responseEntity;
 
 	}
+}
+
+@Data
+class FormProduct {
+	Long id;
+	Long categoryId;
+	Float price;
+	String name;
+	String description;
+	String unit;
 }

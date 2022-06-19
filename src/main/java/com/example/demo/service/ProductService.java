@@ -17,7 +17,7 @@ public interface ProductService {
 	
 	List<Product> getProducts();
 	
-	List<Product> getProductsOrderByViewsAsc();
+	List<Product> getProductsOrderByViewsDesc();
 	
 	List<Product> getProducts(String keyword);
 	

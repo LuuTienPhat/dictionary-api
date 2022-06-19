@@ -103,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> getProductsOrderByViewsAsc() {
-		return productRepo.findByOrderByViewsAsc();
+	public List<Product> getProductsOrderByViewsDesc() {
+		return productRepo.findTop5ByOrderByViewsDesc();
 	}
 }

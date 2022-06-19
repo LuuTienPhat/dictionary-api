@@ -42,6 +42,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Invoice implements Serializable {
 	/**
 	 * 
@@ -59,7 +60,7 @@ public class Invoice implements Serializable {
 	/* @Temporal(TemporalType.TIMESTAMP) */
 //	private String time;
 
-	@JsonManagedReference
+//	@JsonManagedReference
 	@ManyToOne()
 	@JoinColumn(name = "user_id")
 	private User user;
@@ -68,14 +69,34 @@ public class Invoice implements Serializable {
 	@Column(name = "created_date")
 	private LocalDateTime createdDate;
 
-	@JsonManagedReference
+//	@JsonManagedReference
 	@ManyToOne()
 	@JoinColumn(name = "invoice_type_id")
 	private InvoiceType invoiceType;
 
-	@JsonManagedReference
+//	@JsonManagedReference(value = "invoice_invoice_detail")
 	@OneToMany(mappedBy = "invoice", fetch = FetchType.LAZY)
 	private List<InvoiceDetail> invoiceDetails;
+
+	public static List<Invoice> getImportInvoices(List<Invoice> list) {
+		List<Invoice> invoices = new ArrayList<Invoice>();
+		for (Invoice invoice : list) {
+			if (invoice.getInvoiceType().getId() == 1) {
+				invoices.add(invoice);
+			}
+		}
+		return invoices;
+	}
+
+	public static List<Invoice> getExportInvoices(List<Invoice> list) {
+		List<Invoice> invoices = new ArrayList<Invoice>();
+		for (Invoice invoice : list) {
+			if (invoice.getInvoiceType().getId() == 2) {
+				invoices.add(invoice);
+			}
+		}
+		return invoices;
+	}
 
 //	@JsonGetter
 //	private Long getUserId() {

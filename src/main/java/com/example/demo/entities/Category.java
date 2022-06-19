@@ -23,6 +23,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.example.demo.domain.Base;
 import com.example.demo.domain.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +38,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Category extends Base {
 	@Id
 	@Column(name = "id", updatable = false)
@@ -53,7 +56,6 @@ public class Category extends Base {
 	@Column(name = "description")
 	private String description;
 
-	@JsonBackReference
 	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
 	private List<Product> products = new ArrayList<Product>();
 }

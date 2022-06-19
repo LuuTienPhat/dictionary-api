@@ -3,7 +3,6 @@ package com.example.demo.domain;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -17,24 +16,18 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.example.demo.entities.EnWord;
 import com.example.demo.entities.Feedback;
 import com.example.demo.entities.Invoice;
 import com.example.demo.entities.Order;
 import com.example.demo.entities.SavedWord;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -93,11 +86,11 @@ public class User extends Base{
 	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
 	private List<Feedback> feedbacks = new ArrayList<>();
 	
-	@JsonBackReference
+//	@JsonBackReference
 	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
 	private List<Order> orders = new ArrayList<>();
 	
-	@JsonBackReference
+//	@JsonBackReference
 	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
 	private List<Invoice> invoices = new ArrayList<>();
 
