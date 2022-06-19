@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.example.demo.domain.Base;
@@ -72,7 +73,7 @@ public class Order {
 	@Column(name = "state")
 	private int state;
 
-//	@JsonManagedReference
+	@JsonManagedReference(value = "order_order_detail")
 	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
 	private List<OrderDetail> orderDetails;
 
@@ -93,13 +94,13 @@ public class Order {
 	 */
 
 	// GET TOTAL PRICE OF ORDER
-//	public float getTotalPrice() {
-//		float totalPrice = 0;
-//		for (OrderDetail orderDetail : orderDetails) {
-//			totalPrice += (orderDetail.getProduct().getPrice() * orderDetail.getQuantity());
-//		}
-//		return totalPrice;
-//	}
+	public static float getTotalPrice(Order order) {
+		float totalPrice = 0;
+		for (OrderDetail orderDetail : order.getOrderDetails()) {
+			totalPrice += (orderDetail.getProduct().getPrice() * orderDetail.getQuantity());
+		}
+		return totalPrice;
+	}
 
 	// GET TOTAL QUANTITY OF ORDER
 //	public int getTotalQuantity() {

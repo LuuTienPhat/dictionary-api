@@ -41,7 +41,7 @@ public class MeaningServiceImpl implements MeaningService {
 			log.info("Updating Meaning '{}' to the database", newMeaning.getMeaning());
 			updatedMeaning = MeaningRepo.findById(id).map(meaning -> {
 				meaning.setMeaning(newMeaning.getMeaning());
-				meaning.setEnWord(newMeaning.getEnWord());
+//				meaning.setEnWord(newMeaning.getEnWord());
 				meaning.setPartOfSpeech(newMeaning.getPartOfSpeech());
 				return MeaningRepo.save(meaning);
 			}).orElseGet(() -> {

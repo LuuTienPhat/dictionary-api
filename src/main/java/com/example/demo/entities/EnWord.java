@@ -44,7 +44,8 @@ public class EnWord {
 	@Column(name = "pronunciation")
 	private String pronunciation;
 
-	@JsonManagedReference
+//	@JsonManagedReference
+//	@JsonIgnore
 	@OneToMany(mappedBy = "enWord", fetch = FetchType.LAZY)
 	private List<Meaning> meanings;
 

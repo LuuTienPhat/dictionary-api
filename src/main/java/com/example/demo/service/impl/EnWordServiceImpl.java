@@ -114,5 +114,11 @@ public class EnWordServiceImpl implements EnWordService {
 	public List<EnWord> searchWord(String query, PageRequest pageRequest) {
 		return enWordRepo.searchWord(query, pageRequest);
 	}
+
+	@Override
+	public List<EnWord> getEnWordsOrderByViewsDesc() {
+		// TODO Auto-generated method stub
+		return enWordRepo.findTop5ByOrderByViewsDesc();
+	}
 	
 }

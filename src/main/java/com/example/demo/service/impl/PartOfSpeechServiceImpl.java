@@ -91,4 +91,10 @@ public class PartOfSpeechServiceImpl implements PartOfSpeechService {
 	public List<PartOfSpeech> getPartOfSpeeches(String keyword) {
 		return partOfSpeechRepo.search(keyword);
 	}
+
+	@Override
+	public Long count() {
+		// TODO Auto-generated method stub
+		return partOfSpeechRepo.count();
+	}
 }

@@ -1,5 +1,7 @@
 package com.example.demo.api;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -15,10 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.domain.User;
 import com.example.demo.entities.Order;
+import com.example.demo.entities.OrderDetail;
+import com.example.demo.entities.Product;
 import com.example.demo.models.ResponseObject;
 import com.example.demo.service.OrderService;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -77,9 +83,34 @@ public class OrderController {
 	}
 
 	@PostMapping(value = "")
-	public ResponseEntity<ResponseObject> newOrder(@RequestBody Order newOrder) {
-		System.out.println(newOrder.getOrderDetails().get(0).getProduct().getId());
+	public ResponseEntity<ResponseObject> newOrder(@RequestBody FormOrder formOrder) {
+
 		ResponseEntity<ResponseObject> responseEntity = null;
+
+		Order newOrder = new Order();
+		newOrder.setShipAddress(formOrder.getShipAddress());
+		newOrder.setShipPhone(formOrder.getShipPhone());
+		newOrder.setShipNote(formOrder.getShipNote());
+		newOrder.setShipName(formOrder.getShipName());
+
+		User user = new User();
+		user.setId(formOrder.getUserId());
+		newOrder.setUser(user);
+
+		newOrder.setOrderDate(LocalDateTime.now());
+
+		List<OrderDetail> orderDetails = new ArrayList<OrderDetail>();
+		for (FormOrderDetail formOrderDetail : formOrder.getOrderDetails()) {
+			OrderDetail orderDetail = new OrderDetail();
+			Product product = new Product();
+			product.setId(formOrderDetail.getProductId());
+			orderDetail.setProduct(product);
+			orderDetail.setQuantity(formOrderDetail.getQuantity());
+			orderDetail.setOrder(newOrder);
+			orderDetails.add(orderDetail);
+		}
+		newOrder.setOrderDetails(orderDetails);
+
 		Order result = orderService.insertOrder(newOrder);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
@@ -109,8 +140,13 @@ public class OrderController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ResponseObject> replaceOrder(@RequestBody Order newOrder, @PathVariable Long id) {
+	public ResponseEntity<ResponseObject> replaceOrder(@RequestBody FormOrder formOrder, @PathVariable Long id) {
 		ResponseEntity<ResponseObject> responseEntity = null;
+		
+		Order newOrder = new Order();
+		newOrder.setState(formOrder.getState());
+		newOrder.setId(id);
+		
 		Order result = orderService.updateOrder(id, newOrder);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
@@ -147,4 +183,21 @@ public class OrderController {
 				.body(new ResponseObject("ok", HttpStatus.OK.value(), "Order count", result));
 
 	}
+}
+
+@Data
+class FormOrder {
+	Long userId;
+	String shipPhone;
+	String shipAddress;
+	String shipName;
+	String shipNote;
+	Integer state;
+	List<FormOrderDetail> orderDetails;
+}
+
+@Data
+class FormOrderDetail {
+	Long productId;
+	Integer quantity;
 }
