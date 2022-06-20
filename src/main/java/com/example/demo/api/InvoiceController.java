@@ -89,66 +89,65 @@ public class InvoiceController {
 	public ResponseEntity<ResponseObject> newInvoice(@RequestBody FormInvoice formInvoice) {
 		ResponseEntity<ResponseObject> responseEntity = null;
 		Invoice result = null;
-		
+
 		try {
-		Invoice newInvoice = new Invoice();
-		newInvoice.setId(formInvoice.getId());
-		newInvoice.setCreatedDate(LocalDateTime.parse(formInvoice.getCreatedDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-		
-		InvoiceType invoiceType = new InvoiceType();
-		invoiceType.setId(formInvoice.getInvoiceTypeId());
-		newInvoice.setInvoiceType(invoiceType);
-		
-		User user = new User();
-		user.setId(formInvoice.getUserId());
-		newInvoice.setUser(user);
-		
-		List<InvoiceDetail> invoiceDetails = new ArrayList<InvoiceDetail>();
-		for(FormInvoiceDetail formInvoiceDetail: formInvoice.getInvoiceDetails()) {
-			InvoiceDetail invoiceDetail = new InvoiceDetail();
-			invoiceDetail.setInvoice(newInvoice);
-			Product product = new Product();
-			product.setId(formInvoiceDetail.getProductId());
-			invoiceDetail.setProduct(product);
-			invoiceDetail.setPrice(formInvoiceDetail.getPrice());
-			invoiceDetail.setQuantity(formInvoiceDetail.getQuantity());
-			invoiceDetails.add(invoiceDetail);
-		}
-			
-		newInvoice.setInvoiceDetails(invoiceDetails);
-	
-		
-		result = invoiceService.insertInvoice(newInvoice);
-		
-		for(InvoiceDetail invoiceDetail: invoiceDetails) {
-			if(newInvoice.getInvoiceType().getId() == 1) {
-				Product product = productService.getProduct(invoiceDetail.getProduct().getId());
-				int oldQuant = product.getQuantity();
-				int newQuant = oldQuant + invoiceDetail.getQuantity();
-				product.setQuantity(newQuant);
-				productService.updateProduct(product.getId(), product);
+			Invoice newInvoice = new Invoice();
+			newInvoice.setId(formInvoice.getId());
+			newInvoice.setCreatedDate(LocalDateTime.parse(formInvoice.getCreatedDate(),
+					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+			InvoiceType invoiceType = new InvoiceType();
+			invoiceType.setId(formInvoice.getInvoiceTypeId());
+			newInvoice.setInvoiceType(invoiceType);
+
+			User user = new User();
+			user.setId(formInvoice.getUserId());
+			newInvoice.setUser(user);
+
+			List<InvoiceDetail> invoiceDetails = new ArrayList<InvoiceDetail>();
+			for (FormInvoiceDetail formInvoiceDetail : formInvoice.getInvoiceDetails()) {
+				InvoiceDetail invoiceDetail = new InvoiceDetail();
+				invoiceDetail.setInvoice(newInvoice);
+				Product product = new Product();
+				product.setId(formInvoiceDetail.getProductId());
+				invoiceDetail.setProduct(product);
+				invoiceDetail.setPrice(formInvoiceDetail.getPrice());
+				invoiceDetail.setQuantity(formInvoiceDetail.getQuantity());
+				invoiceDetails.add(invoiceDetail);
 			}
-			
-			else if(newInvoice.getInvoiceType().getId() == 2) {
-				Product product = productService.getProduct(invoiceDetail.getProduct().getId());
-				int oldQuant = product.getQuantity();
-				int newQuant = oldQuant - invoiceDetail.getQuantity();
-				product.setQuantity(newQuant);
-				productService.updateProduct(product.getId(), product);
+
+			newInvoice.setInvoiceDetails(invoiceDetails);
+
+			result = invoiceService.insertInvoice(newInvoice);
+
+			for (InvoiceDetail invoiceDetail : invoiceDetails) {
+				if (newInvoice.getInvoiceType().getId() == 1) {
+					Product product = productService.getProduct(invoiceDetail.getProduct().getId());
+					int oldQuant = product.getQuantity();
+					int newQuant = oldQuant + invoiceDetail.getQuantity();
+					product.setQuantity(newQuant);
+					productService.updateProduct(product.getId(), product);
+				}
+
+				else if (newInvoice.getInvoiceType().getId() == 2) {
+					Product product = productService.getProduct(invoiceDetail.getProduct().getId());
+					int oldQuant = product.getQuantity();
+					int newQuant = oldQuant - invoiceDetail.getQuantity();
+					product.setQuantity(newQuant);
+					productService.updateProduct(product.getId(), product);
+				}
 			}
-		}
-		
+
 //		FormInvoice result = formInvoice;
-		if (result != null) {
-			responseEntity = ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Insert invoice successfully!", result));
-		} 
-		}
-		catch (Exception e) {
+			if (result != null) {
+				responseEntity = ResponseEntity.status(HttpStatus.OK)
+						.body(new ResponseObject("ok", HttpStatus.OK.value(), "Insert invoice successfully!", result));
+			}
+		} catch (Exception e) {
 			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new ResponseObject("failed",
 					HttpStatus.NOT_IMPLEMENTED.value(), "Failed to insert invoice!", null));
 			e.printStackTrace();
-		} 
+		}
 		return responseEntity;
 
 	}
@@ -159,10 +158,10 @@ public class InvoiceController {
 		Invoice result = invoiceService.getInvoice(id);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Search invoice successfully!", result));
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Invoice Found", result));
 		} else {
 			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-					new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "invoice not found!", result));
+					new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "Invoice Not found!", result));
 		}
 
 		return responseEntity;

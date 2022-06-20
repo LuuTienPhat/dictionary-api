@@ -31,5 +31,5 @@ public interface OrderRepo extends JpaRepository<Order, Long> {
 	
 	List<Order> findAllByOrderDateBetween(LocalDateTime orderDateStart, LocalDateTime orderDateEnd);
 	
-	List<Order> findAllByStateOrderByOrderDateAsc(Integer state);
+	List<Order> findAllByStateOrderByOrderDateDesc(Integer state);
 }

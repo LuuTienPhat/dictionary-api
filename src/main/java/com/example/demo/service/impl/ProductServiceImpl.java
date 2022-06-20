@@ -38,9 +38,14 @@ public class ProductServiceImpl implements ProductService {
 		Product updatedProduct = null;
 		try {
 			log.info("Update product '{}' ", newProduct.getName());
-			updatedProduct = productRepo.findById(id).map(Product -> {
-				Product.setName(newProduct.getName());
-				return productRepo.save(Product);
+			updatedProduct = productRepo.findById(id).map(product -> {
+				product.setName(newProduct.getName());
+				product.setPrice(newProduct.getPrice());
+				product.setDescription(newProduct.getDescription());
+				product.setUnit(newProduct.getUnit());
+				product.setCategory(newProduct.getCategory());
+				
+				return productRepo.save(product);
 			}).orElseGet(() -> {
 				newProduct.setId(id);
 				return productRepo.save(newProduct);
@@ -60,16 +65,27 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product getProduct(Long id) {
-		Product Product = productRepo.findById(id).get();
-		return Product;
+		Product product = null;
+		try {
+			product = productRepo.findById(id).get();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return product;
 	}
 
 	@Override
 	public Product getProduct(String name) {
-		Product Product = productRepo.findByName(name);
-		return Product;
+		Product product = null;
+		try {
+			product = productRepo.findByName(name);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return product;
 	}
-
 
 	@Override
 	public List<Product> getProducts() {

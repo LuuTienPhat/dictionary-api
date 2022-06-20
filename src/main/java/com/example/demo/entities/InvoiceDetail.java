@@ -29,19 +29,18 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class InvoiceDetail {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", updatable = false)
 	private Long id;
 
-//	@JsonBackReference(value = "invoice_invoice_detail")
+	@JsonBackReference(value = "invoice_invoice_detail")
 	@ManyToOne
 	@JoinColumn(name = "invoice_id")
 	private Invoice invoice;
 
-//	@JsonManagedReference(value = "product_invoice_detail")
+	@JsonManagedReference(value = "product_invoice_detail")
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
@@ -52,8 +51,8 @@ public class InvoiceDetail {
 	@Column(name = "price")
 	private float price;
 
-//	@JsonGetter
-//	private Long getInvoiceId() {
-//		return this.invoice == null ? null : this.invoice.getId();
-//	}
+	@JsonGetter
+	private Long getInvoiceId() {
+		return this.invoice == null ? null : this.invoice.getId();
+	}
 }

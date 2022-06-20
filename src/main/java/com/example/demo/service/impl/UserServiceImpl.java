@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService, UserDetailsService{
+public class UserServiceImpl implements UserService, UserDetailsService {
 
 	private final UserRepo userRepo;
 	private final RoleRepo roleRepo;
@@ -35,9 +35,15 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 
 	@Override
 	public User saveUser(User user) {
-		log.info("Saving new user {} to the database", user.getFirstname());
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		return userRepo.save(user);
+		User newUser = null;
+		try {
+			log.info("Saving new user {} to the database", user.getFirstname());
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			newUser = userRepo.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return newUser;
 	}
 
 	@Override
@@ -56,12 +62,25 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 
 	@Override
 	public User getUser(String username) {
-		log.info("Fetching user {} to", username);
-		return userRepo.findByUsername(username);
+		User user = null;
+		try {
+			log.info("Fetching user {} to", username);
+			user = userRepo.findByUsername(username);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return user;
 	}
 
 	public Role getRole(String roleName) {
-		return roleRepo.findByName(roleName);
+		Role role = null;
+		try {
+			role = roleRepo.findByName(roleName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return role;
 	}
 
 	@Override
@@ -97,8 +116,13 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 
 	@Override
 	public User getUser(Long id) {
-		// TODO Auto-generated method stub
-		return userRepo.findById(id).get();
+		User user = null;
+		try {
+			user = userRepo.findById(id).get();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return user;
 	}
 
 	@Override
@@ -112,7 +136,7 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 		try {
 			log.info("Updating category '{}' to the database", newUser.getFirstname());
 			updatedUser = userRepo.findById(id).map(user -> {
-				
+
 				user.setFirstname(newUser.getFirstname());
 				user.setLastname(newUser.getLastname());
 				user.setPhone(newUser.getPhone());
@@ -121,7 +145,7 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 				user.setGender(newUser.getGender());
 				user.setAddress(newUser.getAddress());
 				user.setRoles(newUser.getRoles());
-				
+
 				return userRepo.save(user);
 			}).orElseGet(() -> {
 				newUser.setId(id);
@@ -143,4 +167,3 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 		return customers;
 	}
 }
-

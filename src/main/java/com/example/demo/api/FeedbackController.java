@@ -98,8 +98,13 @@ public class FeedbackController {
 	}
 
 	@PutMapping(value = "/{id}")
-	ResponseEntity<ResponseObject> replaceFeedback(@RequestBody Feedback newFeedback, @PathVariable Long id) {
+	ResponseEntity<ResponseObject> replaceFeedback(@RequestBody FormFeedback formFeedBack, @PathVariable Long id) {
 		ResponseEntity<ResponseObject> responseEntity = null;
+		
+		Feedback newFeedback = new Feedback();
+		newFeedback.setId(id);
+		newFeedback.setApproved(formFeedBack.getApproved());
+		
 		Feedback result = feedbackService.updateFeedback(id, newFeedback);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
@@ -124,4 +129,5 @@ class FormFeedback {
 	Long userId;
 	String content;
 	String email;
+	Integer approved;
 }

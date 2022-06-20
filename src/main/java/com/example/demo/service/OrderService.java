@@ -25,7 +25,7 @@ public interface OrderService {
 	
 	List<Order> getOrders(LocalDateTime orderDateStart, LocalDateTime orderDateEnd, int state);
 	
-	List<Order> getOrdersOrderByOrderDateAsc(int state);
+	List<Order> getOrdersOrderByOrderDateDesc(int state);
 	
 	Long count();
 	

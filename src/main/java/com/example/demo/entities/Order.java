@@ -26,7 +26,9 @@ import com.example.demo.domain.Base;
 import com.example.demo.domain.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -73,7 +75,7 @@ public class Order {
 	@Column(name = "state")
 	private int state;
 
-	@JsonManagedReference(value = "order_order_detail")
+//	@JsonManagedReference(value = "order_order_detail")
 	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
 	private List<OrderDetail> orderDetails;
 

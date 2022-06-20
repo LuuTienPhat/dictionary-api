@@ -61,19 +61,35 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public Category getCategory(Long id) {
-		Category Category = categoryRepo.findById(id).get();
-		return Category;
+		Category category = null;
+		try {
+			category = categoryRepo.findById(id).get();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return category;
 	}
 
 	@Override
 	public Category getCategory(String name) {
-		Category Category = categoryRepo.findByName(name);
-		return Category;
+		Category category = null;
+		try {
+			category = categoryRepo.findByName(name);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return category;
 	}
 
 	@Override
 	public List<Category> getCategories() {
-		return categoryRepo.findAll();
+		List<Category> categories = null;
+		try {
+			categories = categoryRepo.findAll();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return categories;
 	}
 
 	@Override
@@ -83,8 +99,13 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public List<Category> getCategories(String keyword) {
-		// TODO Auto-generated method stub
-		return categoryRepo.search(keyword);
+		List<Category> categories = null;
+		try {
+			categories = categoryRepo.search(keyword);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return categories;
 	}
 
 //	@Override

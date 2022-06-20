@@ -42,7 +42,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Invoice implements Serializable {
 	/**
 	 * 
@@ -60,8 +59,8 @@ public class Invoice implements Serializable {
 	/* @Temporal(TemporalType.TIMESTAMP) */
 //	private String time;
 
-//	@JsonManagedReference
-	@ManyToOne()
+	@JsonManagedReference
+	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
 
@@ -69,12 +68,12 @@ public class Invoice implements Serializable {
 	@Column(name = "created_date")
 	private LocalDateTime createdDate;
 
-//	@JsonManagedReference
-	@ManyToOne()
+	@JsonManagedReference
+	@ManyToOne
 	@JoinColumn(name = "invoice_type_id")
 	private InvoiceType invoiceType;
 
-//	@JsonManagedReference(value = "invoice_invoice_detail")
+	@JsonManagedReference(value = "invoice_invoice_detail")
 	@OneToMany(mappedBy = "invoice", fetch = FetchType.LAZY)
 	private List<InvoiceDetail> invoiceDetails;
 
@@ -98,10 +97,10 @@ public class Invoice implements Serializable {
 		return invoices;
 	}
 
-//	@JsonGetter
-//	private Long getUserId() {
-//		return user != null ? user.getId() : null;
-// 	}
+	@JsonGetter
+	private Long getUserId() {
+		return user != null ? user.getId() : null;
+ 	}
 //	public boolean hasProduct(String productId) {
 //		for (InvoiceDetail invoiceDetail : invoiceDetails) {
 //			if (invoiceDetail.getProduct().getId().equals(productId))

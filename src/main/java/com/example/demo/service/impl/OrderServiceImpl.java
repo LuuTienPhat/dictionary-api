@@ -95,15 +95,14 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public Order getOrder(Long id) {
-		Order Order = null;
+		Order order = null;
 		try {
-			Order = orderRepo.findById(id).get();
-			log.info("Order found '{}'", Order.getId());
+			order = orderRepo.findById(id).get();
+			log.info("Order found '{}'", order.getId());
 		} catch (Exception e) {
-			log.info("Order not found '{}'", Order.getId());
 			e.printStackTrace();
 		}
-		return Order;
+		return order;
 	}
 
 //	@Override
@@ -161,8 +160,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<Order> getOrdersOrderByOrderDateAsc(int state) {
-		return orderRepo.findAllByStateOrderByOrderDateAsc(state);
+	public List<Order> getOrdersOrderByOrderDateDesc(int state) {
+		return orderRepo.findAllByStateOrderByOrderDateDesc(state);
 	}
 
 	@Override
