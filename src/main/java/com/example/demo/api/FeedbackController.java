@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.domain.User;
 import com.example.demo.entities.Feedback;
 import com.example.demo.entities.PartOfSpeech;
 import com.example.demo.models.ResponseObject;
@@ -24,6 +25,7 @@ import com.example.demo.repo.PartOfSpeechRepo;
 import com.example.demo.service.FeedbackService;
 import com.example.demo.service.UserService;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,7 +60,15 @@ public class FeedbackController {
 	}
 
 	@PostMapping(value = "")
-	public ResponseEntity<ResponseObject> newFeedback(@RequestBody Feedback newFeedback) {
+	public ResponseEntity<ResponseObject> newFeedback(@RequestBody FormFeedback formFeedBack) {
+		Feedback newFeedback = new Feedback();
+		User user = new User();
+		user.setId(formFeedBack.getUserId());
+		
+		newFeedback.setUser(user);
+		newFeedback.setContent(formFeedBack.getContent());
+		newFeedback.setEmail(formFeedBack.getEmail());
+		
 		ResponseEntity<ResponseObject> responseEntity = null;
 		Feedback result = feedbackService.insertFeedback(newFeedback);
 		if (result != null) {
@@ -88,8 +98,13 @@ public class FeedbackController {
 	}
 
 	@PutMapping(value = "/{id}")
-	ResponseEntity<ResponseObject> replaceFeedback(@RequestBody Feedback newFeedback, @PathVariable Long id) {
+	ResponseEntity<ResponseObject> replaceFeedback(@RequestBody FormFeedback formFeedBack, @PathVariable Long id) {
 		ResponseEntity<ResponseObject> responseEntity = null;
+		
+		Feedback newFeedback = new Feedback();
+		newFeedback.setId(id);
+		newFeedback.setApproved(formFeedBack.getApproved());
+		
 		Feedback result = feedbackService.updateFeedback(id, newFeedback);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
@@ -106,4 +121,13 @@ public class FeedbackController {
 	void deleteEmployee(@PathVariable Long id) {
 		feedbackService.deleteFeedback(id);
 	}
+	
+	
+}
+@Data
+class FormFeedback {
+	Long userId;
+	String content;
+	String email;
+	Integer approved;
 }

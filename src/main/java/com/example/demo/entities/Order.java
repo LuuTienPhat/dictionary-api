@@ -42,7 +42,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Order {
 	@Id
 	@Column(name = "id")
@@ -80,15 +79,15 @@ public class Order {
 	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
 	private List<OrderDetail> orderDetails;
 
-//	@JsonBackReference
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
 
-//	@JsonGetter
-//	private Long getUserId() {
-//		return this.user != null ? user.getId() : null;
-//	}
+	@JsonGetter
+	private Long getUserId() {
+		return this.user != null ? user.getId() : null;
+	}
 
 	/*
 	 * public float getOrderTotal() { return orderTotal; }

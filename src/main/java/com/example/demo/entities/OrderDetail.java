@@ -32,19 +32,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class OrderDetail {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-//	@JsonBackReference
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "order_id")
 	private Order order;
 
-//	@JsonBackReference
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
@@ -52,15 +51,15 @@ public class OrderDetail {
 	@Column(name = "quantity")
 	private int quantity;
 
-//	public Long getProductId() {
-//		return this.product == null ? null : this.product.getId();
-//	}
-//	
-//	public Float getProductPrice() {
-//		return this.product == null ? null : this.product.getPrice();	}
-//
-//	public Long getOrderId() {
-//		return this.order == null ? null : this.order.getId();
-//	}
+	public Long getProductId() {
+		return this.product == null ? null : this.product.getId();
+	}
+	
+	public Float getProductPrice() {
+		return this.product == null ? null : this.product.getPrice();	}
+
+	public Long getOrderId() {
+		return this.order == null ? null : this.order.getId();
+	}
 
 }

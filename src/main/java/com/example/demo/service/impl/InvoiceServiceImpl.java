@@ -69,8 +69,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Override
 	public Invoice getInvoice(Long id) {
-		Invoice Invoice = invoiceRepo.findById(id).get();
-		return Invoice;
+		Invoice invoice = null;
+		try {
+			invoice = invoiceRepo.findById(id).get();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return invoice;
 	}
 
 	@Override

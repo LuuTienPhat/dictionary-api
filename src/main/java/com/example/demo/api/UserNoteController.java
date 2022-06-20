@@ -104,6 +104,15 @@ public class UserNoteController {
 		}
 		return "Update successfully";
 	}
+	
+	@DeleteMapping(value = "/user-note/{userId}/{wordId}")
+	@ResponseBody
+	public String deleteNote(@PathVariable Long userId, @PathVariable Long wordId) {
+
+		repository.deleteNote(userId, wordId);
+		return "Delete note successfully";
+	}
+
 
 }
 

@@ -70,7 +70,7 @@ public class OrderController {
 
 		List<Order> result = null;
 
-		result = orderService.getOrdersOrderByOrderDateAsc(0);
+		result = orderService.getOrdersOrderByOrderDateDesc(0);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Fetch Orders successfully!", result));
@@ -130,10 +130,10 @@ public class OrderController {
 		Order result = orderService.getOrder(id);
 		if (result != null) {
 			responseEntity = ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Search Order successfully!", result));
+					.body(new ResponseObject("ok", HttpStatus.OK.value(), "Order found!", result));
 		} else {
 			responseEntity = ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-					.body(new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "Order not found!", result));
+					.body(new ResponseObject("failed", HttpStatus.NOT_IMPLEMENTED.value(), "Order NOT found!", result));
 		}
 
 		return responseEntity;
